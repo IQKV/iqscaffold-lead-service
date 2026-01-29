@@ -113,7 +113,7 @@ services:
       SPRING_RABBITMQ_VIRTUAL_HOST: /
 
       # JWT Configuration
-      USER_SERVICE_URL: http://host.docker.internal:8081
+      USER_SERVICE_URL: http://host.docker.internal:8080
       JWT_ISSUER: iqscaffold-user-service
 
       # Multi-tenancy Configuration
@@ -140,7 +140,7 @@ services:
         -XX:MaxRAMPercentage=75.0
         -Djava.security.egd=file:/dev/./urandom
     ports:
-      - "8084:8084"
+      - "8080:8080"
     depends_on:
       postgres-lead:
         condition: service_healthy
