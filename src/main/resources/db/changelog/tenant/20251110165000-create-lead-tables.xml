@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
-    <changeSet id="001-create-leads-table" author="iqscaffold">
+    <changeSet id="20251110165000-create-leads-table" author="iqscaffold">
         <createTable tableName="leads">
             <column name="id" type="BIGSERIAL">
                 <constraints primaryKey="true" nullable="false"/>

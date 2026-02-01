@@ -5,47 +5,52 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
-    <changeSet id="004-create-lead-activities-table" author="iqscaffold">
-        <createTable tableName="lead_activities">
+    <changeSet id="20251110165200-create-lead-notes-table" author="iqscaffold">
+        <createTable tableName="lead_notes">
             <column name="id" type="BIGSERIAL">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="lead_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="type" type="VARCHAR(50)">
+            <column name="content" type="TEXT">
                 <constraints nullable="false"/>
             </column>
-            <column name="description" type="TEXT">
+            <column name="is_pinned" type="BOOLEAN" defaultValue="false">
                 <constraints nullable="false"/>
             </column>
-            <column name="metadata" type="JSONB"/>
             <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false"/>
             </column>
             <column name="created_by" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
+            <column name="updated_by" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
-        <createIndex tableName="lead_activities" indexName="idx_lead_activities_lead_id">
+        <createIndex tableName="lead_notes" indexName="idx_lead_notes_lead_id">
             <column name="lead_id"/>
         </createIndex>
 
-        <createIndex tableName="lead_activities" indexName="idx_lead_activities_type">
-            <column name="type"/>
-        </createIndex>
-
-        <createIndex tableName="lead_activities" indexName="idx_lead_activities_created_at">
+        <createIndex tableName="lead_notes" indexName="idx_lead_notes_created_at">
             <column name="created_at"/>
         </createIndex>
 
+        <createIndex tableName="lead_notes" indexName="idx_lead_notes_pinned">
+            <column name="is_pinned"/>
+        </createIndex>
+
         <addForeignKeyConstraint
-                baseTableName="lead_activities"
+                baseTableName="lead_notes"
                 baseColumnNames="lead_id"
                 referencedTableName="leads"
                 referencedColumnNames="id"
-                constraintName="fk_lead_activities_lead"
+                constraintName="fk_lead_notes_lead"
                 onDelete="CASCADE"/>
     </changeSet>
 

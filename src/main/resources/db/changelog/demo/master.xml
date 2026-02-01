@@ -6,7 +6,7 @@
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
     <!-- Demo data migrations for development and testing -->
-    <!-- Tenant-specific demo data (leads, notes, activities) -->
+    <include file="db/changelog/demo/20250121000000-demo-lead-records.xml"/>
     <include file="db/changelog/demo/20250121000001-demo-lead-notes-and-activities.xml"/>
 
 </databaseChangeLog>
