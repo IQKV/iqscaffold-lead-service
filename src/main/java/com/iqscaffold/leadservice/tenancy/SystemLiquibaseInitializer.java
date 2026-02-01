@@ -31,8 +31,6 @@ public class SystemLiquibaseInitializer {
    * 
    * <p>This method is triggered by the ApplicationReadyEvent, ensuring that
    * system migrations are run after the application context is fully initialized.
-   * 
-   * @param event the ApplicationReadyEvent (unused but required by Spring)
    */
   @EventListener(ApplicationReadyEvent.class)
   public void onReady() {
