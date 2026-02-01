@@ -12,6 +12,6 @@
     <include file="db/changelog/tenant/20251110165300-create-lead-activity-tables.xml"/>
     
     <!-- Demo data for development and testing (context: demo) -->
-    <include file="db/changelog/demo/master.xml"/>
+    <include file="db/changelog/tenant/demo/master.xml"/>
 
 </databaseChangeLog>
