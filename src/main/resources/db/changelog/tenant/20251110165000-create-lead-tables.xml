@@ -84,6 +84,19 @@
         <createIndex tableName="leads" indexName="idx_leads_company">
             <column name="company"/>
         </createIndex>
+
+        <rollback>
+            <dropIndex tableName="leads" indexName="idx_leads_company"/>
+            <dropIndex tableName="leads" indexName="idx_leads_name"/>
+            <dropIndex tableName="leads" indexName="idx_leads_created_at"/>
+            <dropIndex tableName="leads" indexName="idx_leads_assigned_to"/>
+            <dropIndex tableName="leads" indexName="idx_leads_qualified"/>
+            <dropIndex tableName="leads" indexName="idx_leads_score"/>
+            <dropIndex tableName="leads" indexName="idx_leads_source"/>
+            <dropIndex tableName="leads" indexName="idx_leads_status"/>
+            <dropIndex tableName="leads" indexName="idx_leads_email"/>
+            <dropTable tableName="leads"/>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>

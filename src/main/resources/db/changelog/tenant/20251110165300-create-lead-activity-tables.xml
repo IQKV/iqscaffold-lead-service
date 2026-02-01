@@ -47,6 +47,14 @@
                 referencedColumnNames="id"
                 constraintName="fk_lead_activities_lead"
                 onDelete="CASCADE"/>
+
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="lead_activities" constraintName="fk_lead_activities_lead"/>
+            <dropIndex tableName="lead_activities" indexName="idx_lead_activities_created_at"/>
+            <dropIndex tableName="lead_activities" indexName="idx_lead_activities_type"/>
+            <dropIndex tableName="lead_activities" indexName="idx_lead_activities_lead_id"/>
+            <dropTable tableName="lead_activities"/>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>

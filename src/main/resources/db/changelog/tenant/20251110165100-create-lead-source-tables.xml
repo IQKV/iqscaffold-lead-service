@@ -88,6 +88,19 @@
             <column name="type" value="OTHER"/>
             <column name="description" value="Other lead sources"/>
         </insert>
+
+        <rollback>
+            <!-- Remove default lead sources -->
+            <delete tableName="lead_sources">
+                <where>name IN ('Website', 'Referral', 'Cold Call', 'Social Media', 'Email Campaign', 'Trade Show', 'Partner', 'Other')</where>
+            </delete>
+            <!-- Drop indexes -->
+            <dropIndex tableName="lead_sources" indexName="idx_lead_sources_active"/>
+            <dropIndex tableName="lead_sources" indexName="idx_lead_sources_type"/>
+            <dropIndex tableName="lead_sources" indexName="idx_lead_sources_name"/>
+            <!-- Drop table -->
+            <dropTable tableName="lead_sources"/>
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>
