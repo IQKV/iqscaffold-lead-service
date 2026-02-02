@@ -27,7 +27,7 @@ import reactor.netty.http.client.HttpClient;
 @Configuration
 public class WebClientConfig {
 
-  @Value("${iqscaffold.contact-service-url:http://contact-service:8080}")
+  @Value("${iqscaffold.contact-service-url:http://iqscaffold-contact-service:8080}")
   private String contactServiceUrl;
 
   @Value("${iqscaffold.pipeline-service-url:http://lead-service:8080}")

@@ -128,7 +128,7 @@ IQSCAFFOLD_MESSAGING_RABBITMQ_HOST=localhost
 IQSCAFFOLD_MESSAGING_RABBITMQ_PORT=5672
 
 # Security
-USER_SERVICE_URL=http://user-service:8080
+USER_SERVICE_URL=http://iqscaffold-user-service:8080
 JWT_ISSUER=iqscaffold-user-service
 
 # Lead Features
