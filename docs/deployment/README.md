@@ -55,8 +55,9 @@ helm upgrade --install --atomic --wait --timeout 5m iqscaffold-lead-service ./ \
   --values ./values.yaml \
   --values ./values-dev.yaml \
   --set image.tag=wip \
-  --set secrets.database.password=${INFRA_POSTGRESQL_PASSWORD} \
-  --set secrets.rabbitmq.password=${INFRA_RABBITMQ_PASSWORD} \
+  --set infraServices.postgresql.password=${INFRA_POSTGRESQL_PASSWORD} \
+  --set infraServices.redis.password=${INFRA_REDIS_PASSWORD} \
+  --set infraServices.rabbitmq.password=${INFRA_RABBITMQ_PASSWORD} \
   --namespace iqscaffold-dev-env
 
 # Production (Tagged releases)
@@ -64,10 +65,30 @@ helm upgrade --install --atomic --wait --timeout 5m iqscaffold-lead-service ./ \
   --values ./values.yaml \
   --values ./values-production.yaml \
   --set image.tag=${DRONE_TAG} \
-  --set secrets.database.password=${INFRA_POSTGRESQL_PASSWORD} \
-  --set secrets.rabbitmq.password=${INFRA_RABBITMQ_PASSWORD} \
+  --set infraServices.postgresql.password=${INFRA_POSTGRESQL_PASSWORD} \
+  --set infraServices.redis.password=${INFRA_REDIS_PASSWORD} \
+  --set infraServices.rabbitmq.password=${INFRA_RABBITMQ_PASSWORD} \
   --namespace iqscaffold-production-env
 ```
+
+#### Drone CI Secrets Configuration
+
+The following secrets must be configured in Drone CI for automated deployments:
+
+```bash
+# Configure Drone secrets (run once per repository)
+drone secret add --repository IQKV/iqscaffold-lead-service --name INFRA_POSTGRESQL_PASSWORD --data "your-postgresql-password"
+drone secret add --repository IQKV/iqscaffold-lead-service --name INFRA_REDIS_PASSWORD --data "your-redis-password"
+drone secret add --repository IQKV/iqscaffold-lead-service --name INFRA_RABBITMQ_PASSWORD --data "your-rabbitmq-password"
+```
+
+#### Environment Variable Mapping
+
+| Drone Secret                | Helm Parameter                      | Application Environment Variable | Description                      |
+| --------------------------- | ----------------------------------- | -------------------------------- | -------------------------------- |
+| `INFRA_POSTGRESQL_PASSWORD` | `infraServices.postgresql.password` | `SPRING_DATASOURCE_PASSWORD`     | PostgreSQL database password     |
+| `INFRA_REDIS_PASSWORD`      | `infraServices.redis.password`      | `SPRING_REDIS_PASSWORD`          | Redis cache password             |
+| `INFRA_RABBITMQ_PASSWORD`   | `infraServices.rabbitmq.password`   | `SPRING_RABBITMQ_PASSWORD`       | RabbitMQ message broker password |
 
 ### Manual Deployment
 
@@ -81,7 +102,9 @@ cd charts/IQKV/iqscaffold-lead-service
 # Deploy to development
 helm upgrade --install lead-service ./ \
   --values values-dev.yaml \
-  --set secrets.database.password="your-db-password" \
+  --set infraServices.postgresql.password="your-postgresql-password" \
+  --set infraServices.redis.password="your-redis-password" \
+  --set infraServices.rabbitmq.password="your-rabbitmq-password" \
   --namespace iqscaffold-dev-env \
   --create-namespace
 ```
@@ -92,7 +115,10 @@ helm upgrade --install lead-service ./ \
 
 ```bash
 helm upgrade --install lead-service ./ \
-  --values values-local.yaml \
+  --values values-dev.yaml \
+  --set infraServices.postgresql.password="your-postgresql-password" \
+  --set infraServices.redis.password="your-redis-password" \
+  --set infraServices.rabbitmq.password="your-rabbitmq-password" \
   --namespace iqscaffold-dev-env \
   --create-namespace
 ```
@@ -102,9 +128,9 @@ helm upgrade --install lead-service ./ \
 ```bash
 helm upgrade --install lead-service ./ \
   --values values-production.yaml \
-  --set secrets.database.password="${DB_PASSWORD}" \
-  --set secrets.redis.password="${REDIS_PASSWORD}" \
-  --set secrets.rabbitmq.password="${RABBITMQ_PASSWORD}" \
+  --set infraServices.postgresql.password="${POSTGRESQL_PASSWORD}" \
+  --set infraServices.redis.password="${REDIS_PASSWORD}" \
+  --set infraServices.rabbitmq.password="${RABBITMQ_PASSWORD}" \
   --namespace iqscaffold-production-env \
   --create-namespace
 ```
@@ -113,11 +139,11 @@ helm upgrade --install lead-service ./ \
 
 #### Required Secrets
 
-| Secret            | Environment Variable       | Required | Description             |
-| ----------------- | -------------------------- | -------- | ----------------------- |
-| Database Password | `INFRA_POSTGRESQL_PASSWORD`  | ✅       | PostgreSQL password     |
-| RabbitMQ Password | `INFRA_RABBITMQ_PASSWORD` | ⚠️       | Message broker password |
-| Redis Password    | `INFRA_REDIS_PASSWORD`           | ⚠️       | Cache password          |
+| Secret              | Environment Variable        | Required | Description                      |
+| ------------------- | --------------------------- | -------- | -------------------------------- |
+| PostgreSQL Password | `INFRA_POSTGRESQL_PASSWORD` | ✅       | PostgreSQL database password     |
+| Redis Password      | `INFRA_REDIS_PASSWORD`      | ✅       | Redis cache password             |
+| RabbitMQ Password   | `INFRA_RABBITMQ_PASSWORD`   | ✅       | RabbitMQ message broker password |
 
 #### External Services
 
@@ -184,27 +210,38 @@ Production deployments include:
    kubectl logs deployment/iqscaffold-lead-service -n iqscaffold-dev-env
    ```
 
-2. **Check Configuration**
+2. **Redis Connection Issues**
+
+   ```bash
+   # Check Redis connectivity
+   kubectl exec -it deployment/iqscaffold-lead-service -n iqscaffold-dev-env -- \
+     redis-cli -h iqscaffold-redis -p 6379 ping
+
+   # Verify Redis password configuration
+   kubectl get secret iqscaffold-lead-service-secrets -o yaml | grep redis
+   ```
+
+3. **Check Configuration**
 
    ```bash
    kubectl describe configmap iqscaffold-lead-service-config -n iqscaffold-dev-env
    ```
 
-3. **Test Health Endpoints**
+4. **Test Health Endpoints**
 
    ```bash
    kubectl port-forward deployment/iqscaffold-lead-service 8081:8081 -n iqscaffold-dev-env
    curl http://localhost:8081/actuator/health
    ```
 
-4. **Lead Scoring Issues**
+5. **Lead Scoring Issues**
 
    ```bash
    # Check lead configuration
    kubectl get configmap iqscaffold-lead-service-config -o yaml | grep LEAD_
    ```
 
-5. **Service Integration Issues**
+6. **Service Integration Issues**
    ```bash
    # Test service connectivity
    kubectl exec -it deployment/iqscaffold-lead-service -n iqscaffold-dev-env -- \
