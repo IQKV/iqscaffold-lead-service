@@ -103,7 +103,7 @@ This is the lead management hub for the IQ Scaffold CRM platform. It centralizes
    <summary>Click to expand bash commands</summary>
 
    ```bash
-   docker-compose up -d postgres-lead redis-lead rabbitmq-lead
+   docker compose up -d postgres-lead redis-lead rabbitmq-lead
    ```
 
    </details>
@@ -131,10 +131,10 @@ This is the lead management hub for the IQ Scaffold CRM platform. It centralizes
 
 ```bash
 # Build and run all services
-docker-compose up --build
+docker compose up --build
 
 # Run in detached mode
-docker-compose up -d
+docker compose up -d
 ```
 
 </details>
