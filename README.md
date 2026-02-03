@@ -1,8 +1,65 @@
-# IQ Scaffold Lead Service
+# 🎯 IQ Scaffold Lead Service
 
-A comprehensive CRM lead management service built with Spring Boot, providing multi-tenant lead capture, qualification, scoring, and conversion capabilities.
+> Comprehensive CRM lead management microservice providing multi-tenant lead capture, qualification, scoring, and conversion capabilities with automated workflows and intelligent lead routing.
 
-## Features
+## Table of Contents
+
+- [Business Purpose](#business-purpose)
+- [Overview](#overview)
+- [What It Demonstrates](#what-it-demonstrates)
+- [Architecture Patterns](#architecture-patterns)
+- [Technical Highlights](#technical-highlights)
+- [Use Cases Implemented](#use-cases-implemented)
+- [API Examples](#api-examples)
+- [Learning Points](#learning-points)
+- [Adapting for Your Domain](#adapting-for-your-domain)
+- [Integration with Other Services](#integration-with-other-services)
+- [Deployment Guide](docs/deployment/README.md)
+
+## Business Purpose
+
+A comprehensive lead management service that handles:
+
+- **Lead Capture** - Multi-channel lead ingestion from websites, forms, APIs, and integrations
+- **Lead Qualification** - Automated and manual lead scoring with configurable qualification criteria
+- **Lead Assignment** - Intelligent lead routing to sales representatives based on territory, workload, and expertise
+- **Lead Conversion** - Seamless conversion of qualified leads to contacts with pipeline tracking
+- **Activity Tracking** - Complete audit trail of all lead interactions and touchpoints
+- **Source Attribution** - Comprehensive tracking of lead sources for ROI analysis and campaign optimization
+- **Multi-Tenancy** - Complete tenant isolation ensuring data segregation across organizations
+
+## Overview
+
+This is the lead management hub for the IQ Scaffold CRM platform. It centralizes lead lifecycle management, enabling sales teams to capture, qualify, and convert prospects efficiently while maintaining comprehensive tracking and analytics.
+
+## What It Demonstrates
+
+### 🎯 Lead Management & Qualification
+
+- Comprehensive lead lifecycle management (NEW → CONTACTED → QUALIFIED → CONVERTED)
+- Configurable lead scoring system (0-100) with automatic qualification thresholds
+- Multi-source lead attribution (Website, Referral, Cold Call, Social Media, etc.)
+- Intelligent lead assignment with workload balancing
+- Lead conversion tracking with contact service integration
+- Activity timeline with complete interaction history
+
+### 📊 Lead Scoring & Analytics
+
+- Configurable scoring algorithms based on lead attributes
+- Automatic qualification based on score thresholds (default: 60)
+- Lead source quality tracking and ROI analysis
+- Engagement scoring with activity weighting
+- Performance metrics and conversion analytics
+
+### 🔄 Workflow Automation
+
+- Event-driven lead processing with RabbitMQ integration
+- Automated lead assignment based on rules and availability
+- Status change notifications and alerts
+- Lead nurturing workflows with scheduled follow-ups
+- Integration with email marketing and communication tools
+
+## Architecture Patterns
 
 - **Lead Management**: Create, read, update, and delete leads with comprehensive tracking
 - **Lead Qualification**: Automatic and manual lead qualification with scoring
@@ -42,15 +99,25 @@ A comprehensive CRM lead management service built with Spring Boot, providing mu
 
 1. **Start infrastructure services**:
 
+   <details>
+   <summary>Click to expand bash commands</summary>
+
    ```bash
    docker-compose up -d postgres-lead redis-lead rabbitmq-lead
    ```
 
+   </details>
+
 2. **Run the application**:
+
+   <details>
+   <summary>Click to expand bash commands</summary>
 
    ```bash
    mvn spring-boot:run -Dspring-boot.run.profiles=local
    ```
+
+   </details>
 
 3. **Access the application**:
    - API: http://localhost:8080
@@ -58,6 +125,9 @@ A comprehensive CRM lead management service built with Spring Boot, providing mu
    - Health Check: http://localhost:8080/actuator/health
 
 ### Docker Development
+
+<details>
+<summary>Click to expand bash commands</summary>
 
 ```bash
 # Build and run all services
@@ -67,7 +137,12 @@ docker-compose up --build
 docker-compose up -d
 ```
 
+</details>
+
 ## API Endpoints
+
+<details>
+<summary>Click to expand API endpoints</summary>
 
 ### Leads
 
@@ -106,11 +181,16 @@ docker-compose up -d
 
 - `GET /api/v1/leads/sources` - List available lead sources
 
+</details>
+
 ## Configuration
 
 ### Environment Variables
 
 Key environment variables for configuration:
+
+<details>
+<summary>Click to expand environment variables</summary>
 
 ```bash
 # Database
@@ -135,6 +215,8 @@ JWT_ISSUER=iqscaffold-user-service
 LEAD_ENABLE_AUTO_SCORING=true
 LEAD_ENABLE_AUTO_QUALIFICATION=false
 ```
+
+</details>
 
 ### Profiles
 
@@ -244,6 +326,9 @@ lead.status.changed
 
 ### Running Tests
 
+<details>
+<summary>Click to expand bash commands</summary>
+
 ```bash
 # Unit tests
 mvn test
@@ -254,6 +339,8 @@ mvn verify
 # With coverage
 mvn clean verify jacoco:report
 ```
+
+</details>
 
 ### Code Quality
 
@@ -315,6 +402,9 @@ The project includes:
 
 ### Logs
 
+<details>
+<summary>Click to expand bash commands</summary>
+
 ```bash
 # View application logs
 docker-compose logs lead-service
@@ -322,6 +412,8 @@ docker-compose logs lead-service
 # Follow logs
 docker-compose logs -f lead-service
 ```
+
+</details>
 
 ## Contributing
 
