@@ -117,7 +117,7 @@ helm upgrade --install lead-service ./ \
 | ----------------- | -------------------------- | -------- | ----------------------- |
 | Database Password | `INFRA_POSTGRESQL_PASSWORD`  | ✅       | PostgreSQL password     |
 | RabbitMQ Password | `INFRA_RABBITMQ_PASSWORD` | ⚠️       | Message broker password |
-| Redis Password    | `REDIS_PASSWORD`           | ⚠️       | Cache password          |
+| Redis Password    | `INFRA_REDIS_PASSWORD`           | ⚠️       | Cache password          |
 
 #### External Services
 
