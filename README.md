@@ -18,7 +18,7 @@
 
 ## Business Purpose
 
-A comprehensive lead management service that handles:
+CRM Lead management service that handles:
 
 - **Lead Capture** - Multi-channel lead ingestion from websites, forms, APIs, and integrations
 - **Lead Qualification** - Automated and manual lead scoring with configurable qualification criteria

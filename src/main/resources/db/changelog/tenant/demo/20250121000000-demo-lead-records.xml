@@ -51,7 +51,7 @@
             <column name="status" value="CONVERTED"/>
             <column name="score" value="95"/>
             <column name="qualified" valueBoolean="true"/>
-            <column name="notes" value="Successfully converted lead from website contact form. Led comprehensive evaluation process for CRM modernization. Excellent technical evaluation, strong business case, and executive buy-in. Converted to Enterprise customer in November 2024. This lead demonstrates our successful conversion process from initial inquiry to $180K annual contract."/>
+            <column name="notes" value="Successfully converted lead from website contact form. Led evaluation process for CRM modernization. Excellent technical evaluation, strong business case, and executive buy-in. Converted to Enterprise customer in November 2024. This lead demonstrates our successful conversion process from initial inquiry to $180K annual contract."/>
             <column name="converted_at" valueDate="2024-11-15T16:30:00Z"/>
             <column name="converted_to_contact_id" value="12345"/>
             <column name="created_by" value="admin"/>
