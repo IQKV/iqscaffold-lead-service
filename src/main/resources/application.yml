@@ -335,6 +335,8 @@ iqscaffold:
       jwt:
         jwk-set-uri: ${IQSCAFFOLD_USER_SERVICE_URL:http://iqscaffold-user-service:8080}/.well-known/jwks.json
         issuer: ${JWT_ISSUER:iqscaffold-user-service}
+        secret-key: ${JWT_SECRET_KEY:change-me-in-production}
+        algorithm: HS256
     scoring:
       enable-auto-scoring: ${LEAD_ENABLE_AUTO_SCORING:true}
       default-score: 0
