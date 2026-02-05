@@ -22,7 +22,7 @@ iqscaffold:
   liquibase:
     # Exclude demo context to prevent demo data in production
     contexts: "!demo"
-    
+
   lead:
     scoring:
       enable-auto-scoring: true

@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 
 /**
  * Component responsible for initializing system-wide Liquibase migrations on application startup.
- * 
+ *
  * <p>This component listens for the ApplicationReadyEvent and triggers the execution of
  * system-wide database migrations. System migrations are run against the public schema
  * and typically include shared infrastructure like tenant management tables.
- * 
+ *
  * @author iqscaffold
  * @since 1.0
  */
@@ -28,7 +28,7 @@ public class SystemLiquibaseInitializer {
 
   /**
    * Executes system-wide Liquibase migrations when the application is ready.
-   * 
+   *
    * <p>This method is triggered by the ApplicationReadyEvent, ensuring that
    * system migrations are run after the application context is fully initialized.
    */

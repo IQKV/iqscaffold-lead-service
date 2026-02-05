@@ -10,7 +10,7 @@
     <include file="db/changelog/tenant/20251110165100-create-lead-source-tables.xml"/>
     <include file="db/changelog/tenant/20251110165200-create-lead-note-tables.xml"/>
     <include file="db/changelog/tenant/20251110165300-create-lead-activity-tables.xml"/>
-    
+
     <!-- Demo data for development and testing (context: demo) -->
     <include file="db/changelog/tenant/demo/master.xml"/>
 
