@@ -11,8 +11,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.iqscaffold.leadservice.shared.exception.LeadConversionException;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -21,6 +19,7 @@ import com.iqscaffold.leadservice.event.LeadEventPublisher;
 import com.iqscaffold.leadservice.infrastructure.client.ContactServiceClient;
 import com.iqscaffold.leadservice.infrastructure.client.PipelineServiceClient;
 import com.iqscaffold.leadservice.lead.dto.LeadDtos;
+import com.iqscaffold.leadservice.shared.exception.LeadConversionException;
 import com.iqscaffold.leadservice.shared.exception.LeadNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
