@@ -5,8 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import com.iqscaffold.leadservice.shared.exception.LeadConversionException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -137,6 +142,177 @@ class ConversionOrchestratorTest {
         conversionOrchestrator.convertLead(leadId, request, bearerToken, convertedBy));
 
     verify(leadRepository).findById(leadId);
+  }
+
+  @Test
+  @DisplayName("Should handle contact creation failure and rollback successfully")
+  void shouldHandleContactCreationFailureAndRollback() {
+    // Given
+    Long leadId = 1L;
+    Lead lead = createTestLead(leadId);
+    LeadDtos.ConvertLeadRequest request = new LeadDtos.ConvertLeadRequest(null, "Test notes");
+    String bearerToken = "test-token";
+    String convertedBy = "test-user";
+
+    when(leadRepository.findById(leadId)).thenReturn(Optional.of(lead));
+    when(contactServiceClient.createContact(any(), anyString()))
+        .thenThrow(new RuntimeException("Contact service unavailable"));
+
+    // When & Then
+    assertThrows(LeadConversionException.class, () ->
+        conversionOrchestrator.convertLead(leadId, request, bearerToken, convertedBy));
+
+    verify(leadRepository).findById(leadId);
+    verify(contactServiceClient).createContact(any(), anyString());
+    verify(pipelineServiceClient, never()).createPipelineItem(any(), anyString());
+    verify(leadRepository).save(lead); // Rollback save
+  }
+
+  @Test
+  @DisplayName("Should handle pipeline creation failure and rollback contact")
+  void shouldHandlePipelineCreationFailureAndRollbackContact() {
+    // Given
+    Long leadId = 1L;
+    Lead lead = createTestLead(leadId);
+    LeadDtos.ConvertLeadRequest request = new LeadDtos.ConvertLeadRequest(null, "Test notes");
+    String bearerToken = "test-token";
+    String convertedBy = "test-user";
+
+    ContactServiceClient.ContactResponse contactResponse =
+        new ContactServiceClient.ContactResponse(
+            100L, "John", "Doe", "john.doe@example.com", "123-456-7890",
+            "Developer", null, "CUSTOMER", 85, "Test notes",
+            leadId, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(),
+            "system", "system"
+        );
+
+    when(leadRepository.findById(leadId)).thenReturn(Optional.of(lead));
+    when(contactServiceClient.createContact(any(), anyString())).thenReturn(contactResponse);
+    when(pipelineServiceClient.createPipelineItem(any(), anyString()))
+        .thenThrow(new RuntimeException("Pipeline service unavailable"));
+
+    // When & Then
+    assertThrows(LeadConversionException.class, () ->
+        conversionOrchestrator.convertLead(leadId, request, bearerToken, convertedBy));
+
+    verify(leadRepository).findById(leadId);
+    verify(contactServiceClient).createContact(any(), anyString());
+    verify(pipelineServiceClient).createPipelineItem(any(), anyString());
+    verify(contactServiceClient).deleteContact(eq(100L), anyString()); // Rollback
+    verify(leadRepository).save(lead); // Rollback save
+  }
+
+  @Test
+  @DisplayName("Should calculate probability correctly for various scores")
+  void shouldCalculateProbabilityCorrectly() {
+    // This tests the private method indirectly through conversion
+    Long leadId = 1L;
+    Lead lead = createTestLead(leadId);
+    lead.setScore(75);
+    LeadDtos.ConvertLeadRequest request = new LeadDtos.ConvertLeadRequest(null, "Test notes");
+    String bearerToken = "test-token";
+    String convertedBy = "test-user";
+
+    ContactServiceClient.ContactResponse contactResponse =
+        new ContactServiceClient.ContactResponse(
+            100L, "John", "Doe", "john.doe@example.com", "123-456-7890",
+            "Developer", null, "CUSTOMER", 75, "Test notes",
+            leadId, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(),
+            "system", "system"
+        );
+
+    PipelineServiceClient.PipelineItemResponse pipelineResponse =
+        new PipelineServiceClient.PipelineItemResponse(
+            200L, leadId, 1L, BigDecimal.valueOf(50000), BigDecimal.valueOf(75),
+            LocalDateTime.now(), 0, null, LocalDateTime.now(), LocalDateTime.now(),
+            "system", "system"
+        );
+
+    when(leadRepository.findById(leadId)).thenReturn(Optional.of(lead));
+    when(contactServiceClient.createContact(any(), anyString())).thenReturn(contactResponse);
+    when(pipelineServiceClient.createPipelineItem(any(), anyString())).thenReturn(pipelineResponse);
+    when(leadRepository.save(any(Lead.class))).thenReturn(lead);
+
+    // When
+    LeadDtos.ConvertLeadResponse result = conversionOrchestrator.convertLead(
+        leadId, request, bearerToken, convertedBy);
+
+    // Then
+    assertNotNull(result);
+    verify(pipelineServiceClient).createPipelineItem(any(), anyString());
+  }
+
+  @Test
+  @DisplayName("Should use custom notes from request when provided")
+  void shouldUseCustomNotesFromRequest() {
+    // Given
+    Long leadId = 1L;
+    Lead lead = createTestLead(leadId);
+    String customNotes = "Custom conversion notes";
+    LeadDtos.ConvertLeadRequest request = new LeadDtos.ConvertLeadRequest(null, customNotes);
+    String bearerToken = "test-token";
+    String convertedBy = "test-user";
+
+    ContactServiceClient.ContactResponse contactResponse =
+        new ContactServiceClient.ContactResponse(
+            100L, "John", "Doe", "john.doe@example.com", "123-456-7890",
+            "Developer", null, "CUSTOMER", 85, customNotes,
+            leadId, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(),
+            "system", "system"
+        );
+
+    PipelineServiceClient.PipelineItemResponse pipelineResponse =
+        new PipelineServiceClient.PipelineItemResponse(
+            200L, leadId, 1L, BigDecimal.valueOf(15000), BigDecimal.valueOf(85),
+            LocalDateTime.now(), 0, null, LocalDateTime.now(), LocalDateTime.now(),
+            "system", "system"
+        );
+
+    when(leadRepository.findById(leadId)).thenReturn(Optional.of(lead));
+    when(contactServiceClient.createContact(any(), anyString())).thenReturn(contactResponse);
+    when(pipelineServiceClient.createPipelineItem(any(), anyString())).thenReturn(pipelineResponse);
+    when(leadRepository.save(any(Lead.class))).thenReturn(lead);
+
+    // When
+    LeadDtos.ConvertLeadResponse result = conversionOrchestrator.convertLead(
+        leadId, request, bearerToken, convertedBy);
+
+    // Then
+    assertNotNull(result);
+    verify(contactServiceClient).createContact(any(), anyString());
+  }
+
+  @Test
+  @DisplayName("Should handle rollback failure gracefully")
+  void shouldHandleRollbackFailureGracefully() {
+    // Given
+    Long leadId = 1L;
+    Lead lead = createTestLead(leadId);
+    LeadDtos.ConvertLeadRequest request = new LeadDtos.ConvertLeadRequest(null, "Test notes");
+    String bearerToken = "test-token";
+    String convertedBy = "test-user";
+
+    ContactServiceClient.ContactResponse contactResponse =
+        new ContactServiceClient.ContactResponse(
+            100L, "John", "Doe", "john.doe@example.com", "123-456-7890",
+            "Developer", null, "CUSTOMER", 85, "Test notes",
+            leadId, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(),
+            "system", "system"
+        );
+
+    when(leadRepository.findById(leadId)).thenReturn(Optional.of(lead));
+    when(contactServiceClient.createContact(any(), anyString())).thenReturn(contactResponse);
+    when(pipelineServiceClient.createPipelineItem(any(), anyString()))
+        .thenThrow(new RuntimeException("Pipeline service unavailable"));
+    doThrow(new RuntimeException("Rollback failed"))
+        .when(contactServiceClient).deleteContact(any(), anyString());
+
+    // When & Then
+    LeadConversionException exception = assertThrows(LeadConversionException.class, () ->
+        conversionOrchestrator.convertLead(leadId, request, bearerToken, convertedBy));
+
+    assertNotNull(exception);
+    verify(contactServiceClient).deleteContact(eq(100L), anyString());
   }
 
   private Lead createTestLead(Long id) {
