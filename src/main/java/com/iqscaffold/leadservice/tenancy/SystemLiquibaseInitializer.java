@@ -2,22 +2,31 @@ package com.iqscaffold.leadservice.tenancy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
- * Component responsible for initializing system-wide Liquibase migrations on application startup.
- *
- * <p>This component listens for the ApplicationReadyEvent and triggers the execution of
- * system-wide database migrations. System migrations are run against the public schema
- * and typically include shared infrastructure like tenant management tables.
- *
+ * Initializes system-level database schema using Liquibase migrations.
+ * 
+ * <p>This component runs system migrations in the public schema before
+ * the EntityManagerFactory is created. This ensures that system tables
+ * (tenants, authorities, etc.) exist before Hibernate schema validation.
+ * 
+ * <p>Execution order:
+ * <ol>
+ *   <li>DataSource bean creation</li>
+ *   <li>SystemLiquibaseInitializer afterPropertiesSet (this class)</li>
+ *   <li>EntityManagerFactory creation with schema validation</li>
+ *   <li>Application startup completes</li>
+ * </ol>
+ * 
  * @author iqscaffold
  * @since 1.0
  */
 @Component
-public class SystemLiquibaseInitializer {
+@Order(Integer.MIN_VALUE) // Run as early as possible
+public class SystemLiquibaseInitializer implements InitializingBean {
 
   private final TenantLiquibaseRunner runner;
   private static final Logger logger = LoggerFactory.getLogger(SystemLiquibaseInitializer.class);
@@ -27,20 +36,19 @@ public class SystemLiquibaseInitializer {
   }
 
   /**
-   * Executes system-wide Liquibase migrations when the application is ready.
-   *
-   * <p>This method is triggered by the ApplicationReadyEvent, ensuring that
-   * system migrations are run after the application context is fully initialized.
+   * Runs system Liquibase migrations during bean initialization.
+   * This executes before EntityManagerFactory creation to ensure
+   * system tables exist for Hibernate schema validation.
    */
-  @EventListener(ApplicationReadyEvent.class)
-  public void onReady() {
-    logger.info("Starting system Liquibase migrations for lead service");
+  @Override
+  public void afterPropertiesSet() {
+    logger.info("Initializing system schema with Liquibase migrations...");
     try {
       runner.runSystemChangelog();
-      logger.info("Successfully completed system Liquibase migrations");
+      logger.info("System schema initialization completed successfully");
     } catch (final Exception e) {
       logger.error("Failed to run system Liquibase changelog", e);
-      throw new RuntimeException("System migration failure", e);
+      throw new IllegalStateException("System schema initialization failed", e);
     }
   }
 }

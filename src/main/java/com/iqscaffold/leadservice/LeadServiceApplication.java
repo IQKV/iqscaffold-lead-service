@@ -3,9 +3,11 @@ package com.iqscaffold.leadservice;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.context.annotation.DependsOn;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan(basePackages = "com.iqscaffold.leadservice.config")
+@DependsOn("systemLiquibaseInitializer")
 public class LeadServiceApplication {
 
   public static void main(final String[] args) {
