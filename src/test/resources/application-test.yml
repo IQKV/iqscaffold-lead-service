@@ -35,6 +35,9 @@ logging:
 iqscaffold:
   tenant-id-header: X-Tenant-ID
   user-service-url: http://iqscaffold-user-service:8080
+  liquibase:
+    system-schema:
+      enabled: false
   lead:
     scoring:
       enable-auto-scoring: true
