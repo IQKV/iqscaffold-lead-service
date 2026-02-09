@@ -3,6 +3,7 @@ package com.iqscaffold.leadservice.tenancy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -21,11 +22,15 @@ import org.springframework.stereotype.Component;
  *   <li>Application startup completes</li>
  * </ol>
  * 
+ * <p>This initializer is disabled in test profiles to avoid running migrations
+ * during unit and integration tests.
+ * 
  * @author iqscaffold
  * @since 1.0
  */
 @Component
 @Order(Integer.MIN_VALUE) // Run as early as possible
+@ConditionalOnProperty(name = "spring.liquibase.enabled", havingValue = "true", matchIfMissing = true)
 public class SystemLiquibaseInitializer implements InitializingBean {
 
   private final TenantLiquibaseRunner runner;
