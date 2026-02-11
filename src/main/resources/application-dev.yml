@@ -1,10 +1,55 @@
 # Development Profile Configuration
-# This profile enables demo data for development
+# This profile enables demo data for development and enhanced logging
 
 iqscaffold:
   liquibase:
     contexts: "demo"
+  
+  # Lead Configuration - Development settings
+  lead:
+    scoring:
+      enableAutoScoring: true
+      defaultScore: 0
+      maxScore: 100
+      minQualificationScore: 50  # Lower threshold for development
+    qualification:
+      enableAutoQualification: false  # Disabled for development
+      requireEmail: true
+      requirePhone: false
+      requireCompany: false
+  
+  # Resilience Configuration - Development settings
+  resilience:
+    circuitBreaker:
+      failureRateThreshold: 50
+      slowCallRateThreshold: 50
+      slowCallDurationThreshold: 2000
+    rateLimiter:
+      limitForPeriod: 100
+      limitRefreshPeriod: 1000
+    retry:
+      maxAttempts: 3
+      waitDuration: 1000
 
 logging:
   level:
+    # Application logging
+    com.iqscaffold.leadservice: DEBUG
     com.iqscaffold.leadservice.tenancy.TenantLiquibaseRunner: DEBUG
+    com.iqscaffold.leadservice.scoring: DEBUG
+    com.iqscaffold.leadservice.qualification: DEBUG
+    
+    # Spring Framework
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    
+    # Database and JPA
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    
+    # Resilience4j
+    io.github.resilience4j: DEBUG
+    
+    # Infrastructure
+    liquibase: INFO
+    com.zaxxer.hikari: INFO
