@@ -26,9 +26,9 @@ spring:
   
   # Database Configuration
   datasource:
-    url: ${IQSCAFFOLD_DATABASE_URL:jdbc:postgresql://localhost:5432/iqscaffold_lead}
-    username: ${IQSCAFFOLD_DATABASE_USERNAME:iqscaffold_lead}
-    password: ${IQSCAFFOLD_DATABASE_PASSWORD:iqscaffold_password}
+    url: ${iqscaffold.database.url}
+    username: ${iqscaffold.database.username}
+    password: ${iqscaffold.database.password}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 20
@@ -72,11 +72,11 @@ spring:
   # Redis Configuration
   data:
     redis:
-      host: ${IQSCAFFOLD_CACHE_REDIS_HOST:localhost}
-      port: ${IQSCAFFOLD_CACHE_REDIS_PORT:6379}
-      password: ${IQSCAFFOLD_CACHE_REDIS_PASSWORD:}
-      database: ${IQSCAFFOLD_CACHE_REDIS_DATABASE:3}
-      timeout: 2000ms
+      host: ${iqscaffold.cache.redis.host}
+      port: ${iqscaffold.cache.redis.port}
+      password: ${iqscaffold.cache.redis.password}
+      database: ${iqscaffold.cache.redis.database}
+      timeout: ${iqscaffold.cache.redis.timeout}
       lettuce:
         pool:
           max-active: 8
@@ -86,13 +86,13 @@ spring:
 
   # Messaging Configuration - RabbitMQ
   rabbitmq:
-    host: ${IQSCAFFOLD_MESSAGING_RABBITMQ_HOST:localhost}
-    port: ${IQSCAFFOLD_MESSAGING_RABBITMQ_PORT:5672}
-    username: ${IQSCAFFOLD_MESSAGING_RABBITMQ_USERNAME:iqscaffold}
-    password: ${IQSCAFFOLD_MESSAGING_RABBITMQ_PASSWORD:iqscaffold_password}
-    virtual-host: ${IQSCAFFOLD_MESSAGING_RABBITMQ_VHOST:/}
-    connection-timeout: 30000ms
-    requested-heartbeat: 60s
+    host: ${iqscaffold.messaging.rabbitmq.host}
+    port: ${iqscaffold.messaging.rabbitmq.port}
+    username: ${iqscaffold.messaging.rabbitmq.username}
+    password: ${iqscaffold.messaging.rabbitmq.password}
+    virtual-host: ${iqscaffold.messaging.rabbitmq.virtual-host}
+    connection-timeout: ${iqscaffold.messaging.rabbitmq.connection-timeout}
+    requested-heartbeat: ${iqscaffold.messaging.rabbitmq.requested-heartbeat}
     publisher-confirm-type: correlated
     publisher-returns: true
     template:
@@ -308,6 +308,71 @@ iqscaffold:
   
   # Pipeline Service URL for pipeline item creation
   pipeline-service-url: ${PIPELINE_SERVICE_URL:http://pipeline-service:8080}
+  
+  # Database Configuration
+  database:
+    url: ${IQSCAFFOLD_DATABASE_URL:jdbc:postgresql://localhost:5432/iqscaffold_lead}
+    username: ${IQSCAFFOLD_DATABASE_USERNAME:iqscaffold_lead}
+    password: ${IQSCAFFOLD_DATABASE_PASSWORD:iqscaffold_password}
+    pool:
+      maximum-size: 20
+      minimum-idle: 5
+      connection-timeout: PT30S
+      idle-timeout: PT10M
+      max-lifetime: PT30M
+    migration:
+      enabled: true
+      contexts: ${IQSCAFFOLD_LIQUIBASE_CONTEXTS:}
+      validate-on-migrate: true
+  
+  # Cache Configuration
+  cache:
+    redis:
+      host: ${IQSCAFFOLD_CACHE_REDIS_HOST:localhost}
+      port: ${IQSCAFFOLD_CACHE_REDIS_PORT:6379}
+      password: ${IQSCAFFOLD_CACHE_REDIS_PASSWORD:}
+      database: ${IQSCAFFOLD_CACHE_REDIS_DATABASE:3}
+      timeout: PT2S
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: -1ms
+      key-prefix: "iqscaffold:lead"
+      default-ttl: PT1H
+      enable-statistics: false
+  
+  # Messaging Configuration
+  messaging:
+    rabbitmq:
+      host: ${IQSCAFFOLD_MESSAGING_RABBITMQ_HOST:localhost}
+      port: ${IQSCAFFOLD_MESSAGING_RABBITMQ_PORT:5672}
+      username: ${IQSCAFFOLD_MESSAGING_RABBITMQ_USERNAME:iqscaffold}
+      password: ${IQSCAFFOLD_MESSAGING_RABBITMQ_PASSWORD:iqscaffold_password}
+      virtual-host: ${IQSCAFFOLD_MESSAGING_RABBITMQ_VHOST:/}
+      connection-timeout: PT30S
+      requested-heartbeat: PT60S
+      publisher-confirms: true
+      publisher-returns: true
+      template:
+        mandatory: true
+        retry:
+          enabled: true
+          initial-interval: PT1S
+          max-attempts: 3
+          max-interval: PT10S
+          multiplier: 2.0
+      listener:
+        simple:
+          acknowledge-mode: auto
+          prefetch: 10
+          default-requeue-rejected: false
+          retry:
+            enabled: true
+            initial-interval: PT1S
+            max-attempts: 3
+            max-interval: PT10S
+            multiplier: 2.0
   
   # Internationalization configuration
   i18n:

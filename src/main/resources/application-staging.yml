@@ -1,32 +1,38 @@
+# Staging Environment Configuration
+
 spring:
   datasource:
-    url: ${IQSCAFFOLD_DATABASE_URL:jdbc:postgresql://staging-db:5432/iqscaffold_lead_staging}
-    username: ${IQSCAFFOLD_DATABASE_USERNAME:iqscaffold_lead}
-    password: ${IQSCAFFOLD_DATABASE_PASSWORD}
     hikari:
       pool-name: LeadServiceHikariPool-Staging
       maximum-pool-size: 15
       minimum-idle: 3
 
-  jpa:
-    show-sql: false
+iqscaffold:
+  database:
+    url: ${IQSCAFFOLD_DATABASE_URL:jdbc:postgresql://staging-db:5432/iqscaffold_lead_staging}
+    username: ${IQSCAFFOLD_DATABASE_USERNAME}
+    password: ${IQSCAFFOLD_DATABASE_PASSWORD}
+  
+  cache:
+    redis:
+      host: ${IQSCAFFOLD_CACHE_REDIS_HOST:redis-staging}
+      password: ${IQSCAFFOLD_CACHE_REDIS_PASSWORD}
+      pool:
+        max-active: 16
+        min-idle: 2
+      key-prefix: "iqscaffold:lead:staging"
+      default-ttl: PT30M
+  
+  messaging:
+    rabbitmq:
+      host: ${IQSCAFFOLD_MESSAGING_RABBITMQ_HOST:rabbitmq-staging}
+      password: ${IQSCAFFOLD_MESSAGING_RABBITMQ_PASSWORD}
+  
+  lead:
+    qualification:
+      enable-auto-qualification: true
+      require-phone: true
 
 logging:
   level:
-    root: INFO
-    com.iqscaffold.leadservice: INFO
     org.hibernate.SQL: WARN
-
-# Staging environment overrides for IQ Scaffold properties
-iqscaffold:
-  lead:
-    scoring:
-      enable-auto-scoring: true
-      default-score: 0
-      max-score: 100
-      min-qualification-score: 60
-    qualification:
-      enable-auto-qualification: true
-      require-email: true
-      require-phone: true
-      require-company: false

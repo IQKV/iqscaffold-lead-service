@@ -1,36 +1,50 @@
+# Production Environment Configuration
+
 spring:
   datasource:
-    url: ${IQSCAFFOLD_DATABASE_URL:jdbc:postgresql://production-db:5432/iqscaffold_lead_production}
-    username: ${IQSCAFFOLD_DATABASE_USERNAME:iqscaffold_lead}
-    password: ${IQSCAFFOLD_DATABASE_PASSWORD}
     hikari:
       pool-name: LeadServiceHikariPool-Production
       maximum-pool-size: 25
-      minimum-idle: 5
 
-  jpa:
-    show-sql: false
+iqscaffold:
+  database:
+    url: ${IQSCAFFOLD_DATABASE_URL}
+    username: ${IQSCAFFOLD_DATABASE_USERNAME}
+    password: ${IQSCAFFOLD_DATABASE_PASSWORD}
+    pool:
+      maximum-size: 50
+      minimum-idle: 10
+  
+  cache:
+    redis:
+      host: ${IQSCAFFOLD_CACHE_REDIS_HOST}
+      password: ${IQSCAFFOLD_CACHE_REDIS_PASSWORD}
+      pool:
+        max-active: 32
+        max-idle: 16
+        min-idle: 4
+      key-prefix: "iqscaffold:lead:production"
+      default-ttl: PT15M
+  
+  messaging:
+    rabbitmq:
+      host: ${IQSCAFFOLD_MESSAGING_RABBITMQ_HOST}
+      username: ${IQSCAFFOLD_MESSAGING_RABBITMQ_USERNAME}
+      password: ${IQSCAFFOLD_MESSAGING_RABBITMQ_PASSWORD}
+  
+  liquibase:
+    contexts: "!demo"
+
+  lead:
+    scoring:
+      min-qualification-score: 70
+    qualification:
+      enable-auto-qualification: true
+      require-phone: true
+      require-company: true
 
 logging:
   level:
     root: WARN
     com.iqscaffold.leadservice: INFO
     org.hibernate.SQL: WARN
-
-# Production environment overrides for IQ Scaffold properties
-iqscaffold:
-  liquibase:
-    # Exclude demo context to prevent demo data in production
-    contexts: "!demo"
-
-  lead:
-    scoring:
-      enable-auto-scoring: true
-      default-score: 0
-      max-score: 100
-      min-qualification-score: 70
-    qualification:
-      enable-auto-qualification: true
-      require-email: true
-      require-phone: true
-      require-company: true
