@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
 
-    <changeSet id="20251110164000-create-tenant-info-table" author="iqscaffold">
+    <changeSet id="20251110164000-create-tenant-info-table" author="iqscaffold" context="public">
         <createTable tableName="tenant_info" schemaName="public">
             <column name="id" type="BIGSERIAL">
                 <constraints primaryKey="true" nullable="false"/>
