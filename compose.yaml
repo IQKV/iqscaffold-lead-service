@@ -1,7 +1,7 @@
 services:
   # PostgreSQL Database for Lead Service - Local Development
   postgres-lead:
-    image: postgres:15.8-alpine
+    image: postgres:17-alpine
     container_name: iqscaffold-lead-postgres-dev
     environment:
       POSTGRES_DB: iqscaffold_lead_local
