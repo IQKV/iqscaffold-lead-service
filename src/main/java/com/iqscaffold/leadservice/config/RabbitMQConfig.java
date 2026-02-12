@@ -6,6 +6,7 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
@@ -128,6 +129,17 @@ public class RabbitMQConfig {
   @Bean
   public MessageConverter jsonMessageConverter() {
     return new Jackson2JsonMessageConverter();
+  }
+
+  /**
+   * Creates a RabbitAdmin for auto-declaring queues, exchanges, and bindings.
+   *
+   * @param connectionFactory RabbitMQ connection factory
+   * @return Configured RabbitAdmin
+   */
+  @Bean
+  public RabbitAdmin rabbitAdmin(final ConnectionFactory connectionFactory) {
+    return new RabbitAdmin(connectionFactory);
   }
 
   /**
