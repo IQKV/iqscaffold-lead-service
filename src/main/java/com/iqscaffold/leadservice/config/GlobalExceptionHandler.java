@@ -254,8 +254,10 @@ public class GlobalExceptionHandler {
     problemDetail.setType(URI.create("https://api.iqscaffold.com/errors/internal-error"));
     problemDetail.setTitle("Internal Server Error");
     problemDetail.setInstance(URI.create(request.getRequestURI()));
+    problemDetail.setProperty("exceptionType", ex.getClass().getSimpleName());
 
-    logger.error("Unexpected error on {}: ", request.getRequestURI(), ex);
+    // Log the full exception with stack trace and request context
+    logger.error("Unexpected error at {}: {}", request.getRequestURI(), ex.getMessage(), ex);
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(problemDetail);
   }
 }
