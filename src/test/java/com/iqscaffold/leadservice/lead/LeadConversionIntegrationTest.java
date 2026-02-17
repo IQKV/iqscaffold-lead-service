@@ -102,8 +102,7 @@ class LeadConversionIntegrationTest {
     // When & Then - Convert lead
     mockMvc.perform(post("/api/v1/leads/{id}/convert", savedLead.getId())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request))
-            .header("Authorization", "Bearer test-token"))
+            .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.leadId").value(savedLead.getId()))
         .andExpect(jsonPath("$.contactId").value(100L))
@@ -153,8 +152,7 @@ class LeadConversionIntegrationTest {
     // When & Then
     mockMvc.perform(post("/api/v1/leads/{id}/convert", savedLead.getId())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request))
-            .header("Authorization", "Bearer test-token"))
+            .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.contactId").value(101L));
   }
@@ -184,8 +182,7 @@ class LeadConversionIntegrationTest {
 
     // When & Then - No request body
     mockMvc.perform(post("/api/v1/leads/{id}/convert", savedLead.getId())
-            .contentType(MediaType.APPLICATION_JSON)
-            .header("Authorization", "Bearer test-token"))
+            .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.contactId").value(102L));
   }
@@ -206,8 +203,7 @@ class LeadConversionIntegrationTest {
     // When & Then
     mockMvc.perform(post("/api/v1/leads/{id}/convert", savedLead.getId())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request))
-            .header("Authorization", "Bearer test-token"))
+            .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isBadRequest());
   }
 
@@ -221,8 +217,7 @@ class LeadConversionIntegrationTest {
     // When & Then
     mockMvc.perform(post("/api/v1/leads/{id}/convert", 99999L)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request))
-            .header("Authorization", "Bearer test-token"))
+            .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isNotFound());
   }
 
@@ -246,8 +241,7 @@ class LeadConversionIntegrationTest {
     // When & Then
     mockMvc.perform(post("/api/v1/leads/{id}/convert", savedLead.getId())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request))
-            .header("Authorization", "Bearer test-token"))
+            .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isInternalServerError());
 
     // Verify lead status NOT changed
@@ -289,8 +283,7 @@ class LeadConversionIntegrationTest {
     // When & Then
     mockMvc.perform(post("/api/v1/leads/{id}/convert", savedLead.getId())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request))
-            .header("Authorization", "Bearer test-token"))
+            .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk());
 
     // Verify lead was converted successfully
@@ -337,8 +330,7 @@ class LeadConversionIntegrationTest {
     // When
     mockMvc.perform(post("/api/v1/leads/{id}/convert", savedLead.getId())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request))
-            .header("Authorization", "Bearer test-token"))
+            .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk());
 
     // Then - Verify lead data preserved
@@ -382,8 +374,7 @@ class LeadConversionIntegrationTest {
     // When
     mockMvc.perform(post("/api/v1/leads/{id}/convert", savedLead.getId())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request))
-            .header("Authorization", "Bearer test-token"))
+            .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk());
 
     // Then - Verify contact service was called with CUSTOMER status
@@ -437,8 +428,7 @@ class LeadConversionIntegrationTest {
     // When
     mockMvc.perform(post("/api/v1/leads/{id}/convert", savedLead.getId())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request))
-            .header("Authorization", "Bearer test-token"))
+            .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk());
 
     // Then - Verify contact created with lead score
@@ -455,3 +445,4 @@ class LeadConversionIntegrationTest {
     return lead;
   }
 }
+

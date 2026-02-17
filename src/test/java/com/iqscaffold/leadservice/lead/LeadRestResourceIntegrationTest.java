@@ -61,7 +61,7 @@ class LeadRestResourceIntegrationTest {
         "John",
         "Doe",
         "john.doe@example.com",
-        "+1234567890",
+        "1234567890",
         "Acme Corp",
         "Software Engineer",
         "Website",
@@ -78,7 +78,7 @@ class LeadRestResourceIntegrationTest {
         .andExpect(jsonPath("$.firstName", is("John")))
         .andExpect(jsonPath("$.lastName", is("Doe")))
         .andExpect(jsonPath("$.email", is("john.doe@example.com")))
-        .andExpect(jsonPath("$.phone", is("+1234567890")))
+        .andExpect(jsonPath("$.phone", is("1234567890")))
         .andExpect(jsonPath("$.company", is("Acme Corp")))
         .andExpect(jsonPath("$.jobTitle", is("Software Engineer")))
         .andExpect(jsonPath("$.source", is("Website")))
@@ -98,7 +98,7 @@ class LeadRestResourceIntegrationTest {
   void testGetLeadById() throws Exception {
     // Given - Create a lead first
     Lead lead = new Lead("Jane", "Smith", "jane.smith@example.com", "Referral");
-    lead.setPhone("+9876543210");
+    lead.setPhone("9876543210");
     lead.setCompany("Tech Solutions");
     lead.setJobTitle("CTO");
     lead.setNotes("High priority lead");
@@ -114,7 +114,7 @@ class LeadRestResourceIntegrationTest {
         .andExpect(jsonPath("$.firstName", is("Jane")))
         .andExpect(jsonPath("$.lastName", is("Smith")))
         .andExpect(jsonPath("$.email", is("jane.smith@example.com")))
-        .andExpect(jsonPath("$.phone", is("+9876543210")))
+        .andExpect(jsonPath("$.phone", is("9876543210")))
         .andExpect(jsonPath("$.company", is("Tech Solutions")))
         .andExpect(jsonPath("$.jobTitle", is("CTO")))
         .andExpect(jsonPath("$.source", is("Referral")))
@@ -149,7 +149,7 @@ class LeadRestResourceIntegrationTest {
   void testUpdateLead() throws Exception {
     // Given - Create a lead first
     Lead lead = new Lead("Bob", "Johnson", "bob.johnson@example.com", "Cold Call");
-    lead.setPhone("+1111111111");
+    lead.setPhone("1111111111");
     lead.setCompany("Old Company");
     lead.setCreatedBy("test-user");
     lead.setUpdatedBy("test-user");
@@ -160,7 +160,7 @@ class LeadRestResourceIntegrationTest {
         "Bob",
         "Johnson",
         "bob.johnson@example.com",
-        "+2222222222",
+        "2222222222",
         "New Company",
         "VP of Sales",
         "Cold Call",
@@ -177,7 +177,7 @@ class LeadRestResourceIntegrationTest {
         .andExpect(jsonPath("$.firstName", is("Bob")))
         .andExpect(jsonPath("$.lastName", is("Johnson")))
         .andExpect(jsonPath("$.email", is("bob.johnson@example.com")))
-        .andExpect(jsonPath("$.phone", is("+2222222222")))
+        .andExpect(jsonPath("$.phone", is("2222222222")))
         .andExpect(jsonPath("$.company", is("New Company")))
         .andExpect(jsonPath("$.jobTitle", is("VP of Sales")))
         .andExpect(jsonPath("$.notes", is("Updated notes")))
@@ -446,24 +446,24 @@ class LeadRestResourceIntegrationTest {
   void testSearchByTermMatchingPhone() throws Exception {
     // Given - Create leads with different phone numbers
     Lead lead1 = new Lead("Eve", "Foster", "eve@example.com", "Website");
-    lead1.setPhone("+1234567890");
+    lead1.setPhone("1234567890");
     lead1.setCreatedBy("test-user");
     lead1.setUpdatedBy("test-user");
     leadRepository.save(lead1);
 
     Lead lead2 = new Lead("Frank", "Green", "frank@example.com", "Referral");
-    lead2.setPhone("+9876543210");
+    lead2.setPhone("9876543210");
     lead2.setCreatedBy("test-user");
     lead2.setUpdatedBy("test-user");
     leadRepository.save(lead2);
 
-    // When & Then - Search for "123456" should match "+1234567890"
+    // When & Then - Search for "123456" should match "1234567890"
     mockMvc.perform(get("/api/v1/leads")
             .param("search", "123456")
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content.length()", is(1)))
-        .andExpect(jsonPath("$.content[0].phone", is("+1234567890")));
+        .andExpect(jsonPath("$.content[0].phone", is("1234567890")));
   }
 
   /**
@@ -679,3 +679,6 @@ class LeadRestResourceIntegrationTest {
         .andExpect(jsonPath("$.content[0].status", is("NEW")));
   }
 }
+
+
+
