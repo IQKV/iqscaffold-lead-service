@@ -44,8 +44,6 @@ public class JacksonConfig {
     // Configure the builder before building the ObjectMapper
     // This ensures proper integration with Spring Boot's auto-configuration
     return builder
-        // Disable default typing to prevent Java type information in JSON
-        .defaultTyping(null)
         // Configure serialization features
         .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         .featuresToEnable(SerializationFeature.INDENT_OUTPUT)
