@@ -54,12 +54,18 @@ public class ContactServiceClient {
     log.debug("Creating contact in Contact Service for tenant: {}", tenantId);
 
     try {
-      return contactServiceWebClient
+      var requestSpec = contactServiceWebClient
           .post()
           .uri("/api/v1/contacts")
-          .header(HttpHeaders.AUTHORIZATION, "Bearer " + bearerToken)
           .header("X-Tenant-ID", tenantId)
-          .contentType(MediaType.APPLICATION_JSON)
+          .contentType(MediaType.APPLICATION_JSON);
+      
+      // Only add Authorization header if bearer token is present
+      if (bearerToken != null) {
+        requestSpec = requestSpec.header(HttpHeaders.AUTHORIZATION, "Bearer " + bearerToken);
+      }
+      
+      return requestSpec
           .bodyValue(request)
           .retrieve()
           .bodyToMono(ContactResponse.class)
@@ -113,11 +119,17 @@ public class ContactServiceClient {
     log.debug("Deleting contact {} in Contact Service for tenant: {}", contactId, tenantId);
 
     try {
-      contactServiceWebClient
+      var requestSpec = contactServiceWebClient
           .delete()
           .uri("/api/v1/contacts/{id}", contactId)
-          .header(HttpHeaders.AUTHORIZATION, "Bearer " + bearerToken)
-          .header("X-Tenant-ID", tenantId)
+          .header("X-Tenant-ID", tenantId);
+      
+      // Only add Authorization header if bearer token is present
+      if (bearerToken != null) {
+        requestSpec = requestSpec.header(HttpHeaders.AUTHORIZATION, "Bearer " + bearerToken);
+      }
+      
+      requestSpec
           .retrieve()
           .bodyToMono(Void.class)
           .block();

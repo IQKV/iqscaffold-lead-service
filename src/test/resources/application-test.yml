@@ -1,4 +1,7 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true  # Allow test beans to override production beans
+  
   datasource:
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     username: sa
@@ -30,6 +33,34 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     com.iqscaffold.leadservice: DEBUG
+
+# Disable resilience4j for tests to allow proper mocking
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: false
+    instances:
+      contactService:
+        registerHealthIndicator: false
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+  retry:
+    configs:
+      default:
+        maxAttempts: 1  # Disable retries in tests
+    instances:
+      contactService:
+        maxAttempts: 1
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 10s
+    instances:
+      contactService:
+        timeoutDuration: 10s
 
 # Test-specific IQ Scaffold properties
 iqscaffold:

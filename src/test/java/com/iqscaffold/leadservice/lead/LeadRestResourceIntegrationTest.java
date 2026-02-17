@@ -148,7 +148,7 @@ class LeadRestResourceIntegrationTest {
   @WithMockUser(authorities = {"USER"})
   void testUpdateLead() throws Exception {
     // Given - Create a lead first
-    Lead lead = new Lead("Bob", "Johnson", "bob.johnson@example.com", "Cold Call");
+    Lead lead = new Lead("Bob", "Johnson", "bob.johnson@example.com", "COLD_CALL");
     lead.setPhone("1111111111");
     lead.setCompany("Old Company");
     lead.setCreatedBy("test-user");
@@ -163,7 +163,7 @@ class LeadRestResourceIntegrationTest {
         "2222222222",
         "New Company",
         "VP of Sales",
-        "Cold Call",
+        "COLD_CALL",
         "Updated notes",
         null
     );
