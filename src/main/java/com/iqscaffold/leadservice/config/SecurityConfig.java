@@ -1,7 +1,7 @@
 package com.iqscaffold.leadservice.config;
 
 import com.iqscaffold.leadservice.security.JwtAuthenticationFilter;
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.security.autoconfigure.actuate.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
