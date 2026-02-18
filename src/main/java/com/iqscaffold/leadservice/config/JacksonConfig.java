@@ -23,6 +23,17 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 public class JacksonConfig {
 
   /**
+   * Provide Jackson2ObjectMapperBuilder bean if not already available.
+   * This ensures the builder is available in all contexts, including tests.
+   * 
+   * @return Jackson2ObjectMapperBuilder instance
+   */
+  @Bean
+  public Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder() {
+    return new Jackson2ObjectMapperBuilder();
+  }
+
+  /**
    * Configure the primary ObjectMapper bean for the application.
    * 
    * <p>Key configurations:
