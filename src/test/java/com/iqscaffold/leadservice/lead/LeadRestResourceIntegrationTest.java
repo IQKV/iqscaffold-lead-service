@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Integration tests for Lead CRUD operations.
- * Tests Requirements: 1.1, 1.2, 1.3, 1.4
  */
 @SpringBootTest
 @AutoConfigureMockMvc

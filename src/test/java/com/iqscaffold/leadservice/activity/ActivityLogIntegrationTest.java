@@ -31,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Integration tests for Activity Logging.
- * Tests Requirements: 7.1, 7.2, 7.3, 7.6
  */
 @SpringBootTest
 @AutoConfigureMockMvc
