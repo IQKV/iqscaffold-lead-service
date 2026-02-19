@@ -3,6 +3,7 @@ package com.iqscaffold.leadservice.config;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -21,9 +22,11 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
   public static final String EXCHANGE_NAME = "crm.events";
-  public static final String CONTACT_CREATED_QUEUE = "lead-service.contact.created";
-  public static final String CONTACT_UPDATED_QUEUE = "lead-service.contact.updated";
-  public static final String CONTACT_DELETED_QUEUE = "lead-service.contact.deleted";
+  public static final String DLX_EXCHANGE = "iqscaffold.dlx";
+  public static final String CONTACT_CREATED_QUEUE = "iqscaffold.lead.contact.created";
+  public static final String CONTACT_UPDATED_QUEUE = "iqscaffold.lead.contact.updated";
+  public static final String CONTACT_DELETED_QUEUE = "iqscaffold.lead.contact.deleted";
+  public static final String DLQ = "iqscaffold.dlq";
   public static final String CONTACT_CREATED_ROUTING_KEY = "contact.created";
   public static final String CONTACT_UPDATED_ROUTING_KEY = "contact.updated";
   public static final String CONTACT_DELETED_ROUTING_KEY = "contact.deleted";
@@ -44,33 +47,63 @@ public class RabbitMQConfig {
   }
 
   /**
-   * Creates queue for contact created events.
+   * Dead Letter Exchange for failed messages
+   */
+  @Bean
+  public TopicExchange deadLetterExchange() {
+    return new TopicExchange(DLX_EXCHANGE, true, false);
+  }
+
+  /**
+   * Creates queue for contact created events with dead letter routing.
    *
    * @return Durable queue for contact created events
    */
   @Bean
   public Queue contactCreatedQueue() {
-    return new Queue(CONTACT_CREATED_QUEUE, true);
+    return QueueBuilder
+        .durable(CONTACT_CREATED_QUEUE)
+        .withArgument("x-dead-letter-exchange", DLX_EXCHANGE)
+        .withArgument("x-message-ttl", 86400000) // 24 hours
+        .build();
   }
 
   /**
-   * Creates queue for contact updated events.
+   * Creates queue for contact updated events with dead letter routing.
    *
    * @return Durable queue for contact updated events
    */
   @Bean
   public Queue contactUpdatedQueue() {
-    return new Queue(CONTACT_UPDATED_QUEUE, true);
+    return QueueBuilder
+        .durable(CONTACT_UPDATED_QUEUE)
+        .withArgument("x-dead-letter-exchange", DLX_EXCHANGE)
+        .withArgument("x-message-ttl", 86400000) // 24 hours
+        .build();
   }
 
   /**
-   * Creates queue for contact deleted events.
+   * Creates queue for contact deleted events with dead letter routing.
    *
    * @return Durable queue for contact deleted events
    */
   @Bean
   public Queue contactDeletedQueue() {
-    return new Queue(CONTACT_DELETED_QUEUE, true);
+    return QueueBuilder
+        .durable(CONTACT_DELETED_QUEUE)
+        .withArgument("x-dead-letter-exchange", DLX_EXCHANGE)
+        .withArgument("x-message-ttl", 86400000) // 24 hours
+        .build();
+  }
+
+  /**
+   * Dead Letter Queue for failed messages
+   */
+  @Bean
+  public Queue deadLetterQueue() {
+    return QueueBuilder
+        .durable(DLQ)
+        .build();
   }
 
   /**
@@ -119,6 +152,17 @@ public class RabbitMQConfig {
     return BindingBuilder.bind(contactDeletedQueue)
         .to(crmEventsExchange)
         .with(CONTACT_DELETED_ROUTING_KEY);
+  }
+
+  /**
+   * Bind dead letter queue to DLX with all routing keys
+   */
+  @Bean
+  public Binding deadLetterBinding() {
+    return BindingBuilder
+        .bind(deadLetterQueue())
+        .to(deadLetterExchange())
+        .with("#");
   }
 
   /**
