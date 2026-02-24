@@ -374,6 +374,18 @@ The project includes:
 - OpenTelemetry integration
 - Distributed tracing support
 
+### Grafana Dashboard
+
+A Grafana dashboard is available at `docs/monitoring/grafana-dashboard.json` providing real-time visibility into:
+
+- Service Health: uptime, request rate, error rate, p95 latency, active sessions
+- HTTP Metrics: request rate by status code (2xx/4xx/5xx), response time percentiles (p50/p95/p99)
+- JVM Memory: heap/non-heap usage, GC pause time, thread count
+- Database: HikariCP connection pool usage, connection acquisition time
+- Business Metrics: user registration rate, login attempts (success/failed), email verification rate
+
+The dashboard uses Prometheus as the data source and auto-refreshes every 30 seconds. Import it into your Grafana instance to monitor service performance and health.
+
 ## Integration with Other Services
 
 ### User Service
