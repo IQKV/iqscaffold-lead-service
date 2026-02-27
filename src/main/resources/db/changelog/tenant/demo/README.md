@@ -1,13 +1,13 @@
 # Demo Lead Records
 
-This directory contains demo lead data migrations for development and testing purposes. The migrations create a complete lead management scenario for the `demo-tenant` organization with
+This directory contains demo lead data migrations for development and testing purposes. The migrations create a complete lead management scenario for the `default` organization with
 leads at different stages of the sales pipeline, including notes, activities, and conversion tracking.
 
 ## Demo Lead Management Scenario
 
 ### Organization Context
 
-- **Tenant**: `demo-tenant` (Demo Tech Solutions)
+- **Tenant**: `default` (Demo Tech Solutions)
 - **Schema**: `demo_tenant` (isolated tenant schema)
 - **Business Model**: B2B SaaS Platform Provider
 - **Sales Process**: Lead Generation → Qualification → Conversion → Customer Success
