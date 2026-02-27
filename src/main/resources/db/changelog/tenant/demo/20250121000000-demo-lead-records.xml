@@ -32,8 +32,8 @@
             <column name="qualified" valueBoolean="true"/>
             <column name="notes"
                     value="High-value enterprise prospect referred by existing customer Global Retail Solutions. VP of Engineering at 500+ employee tech company. Strong technical background, understands our platform value. Attended 3 product demos, downloaded technical documentation, and completed security questionnaire. Budget approved for $75K+ solution. Decision timeline: February 2025. Key requirements: API integrations, SSO, and advanced analytics."/>
-            <column name="converted_at" value=""/>
-            <column name="converted_to_contact_id" value=""/>
+            <column name="converted_at" valueDate="null"/>
+            <column name="converted_to_contact_id" value="null"/>
             <column name="created_by" value="admin"/>
             <column name="updated_by" value="admin"/>
             <column name="assigned_to" value="admin"/>
@@ -76,8 +76,8 @@
             <column name="qualified" valueBoolean="false"/>
             <column name="notes"
                     value="New inbound lead from StartupHub Accelerator partner referral program. COO at early-stage startup (25 employees) looking for scalable CRM solution. Received 20% partner discount code. Initial interest in our platform but needs to understand pricing and implementation timeline. Startup is in Series A funding round, decision pending funding completion."/>
-            <column name="converted_at" value=""/>
-            <column name="converted_to_contact_id" value=""/>
+            <column name="converted_at" valueDate="null"/>
+            <column name="converted_to_contact_id" value="null"/>
             <column name="created_by" value="manager"/>
             <column name="updated_by" value="manager"/>
             <column name="assigned_to" value="manager"/>
