@@ -66,6 +66,9 @@ resilience4j:
 iqscaffold:
   tenant-id-header: X-Tenant-ID
   user-service-url: http://iqscaffold-user-service:8080
+  bootstrap:
+    default-tenant-schema:
+      enabled: false
   liquibase:
     system-schema:
       enabled: false
