@@ -15,6 +15,8 @@
             <column name="tenant_name" value="Demo Tech Solutions"/>
             <column name="schema_name" value="demo_tenant"/>
             <column name="status" value="ACTIVE"/>
+            <column name="created_by" value="system"/>
+            <column name="updated_by" value="system"/>
         </insert>
 
         <!-- 1. High-Value Qualified Lead - David Kim (Enterprise Prospect) -->
