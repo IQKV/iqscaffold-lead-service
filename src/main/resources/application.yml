@@ -395,6 +395,22 @@ iqscaffold:
     # Context filtering for migrations (comma-separated)
     # Empty = run all changesets, "demo" = include demo data, "!demo" = exclude demo data
     contexts: ${IQSCAFFOLD_LIQUIBASE_CONTEXTS:}
+    
+    # System schema initialization
+    system-schema:
+      enabled: true
+  
+  # Tenancy Configuration
+  tenancy:
+    schema:
+      prefix: tenant_
+      default: public
+  
+  # Bootstrap Configuration
+  bootstrap:
+    default-tenant-schema:
+      enabled: true
+      tenant-id: default
   
   # Lead configuration
   lead:
