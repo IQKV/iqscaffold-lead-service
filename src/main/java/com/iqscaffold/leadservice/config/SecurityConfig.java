@@ -38,7 +38,7 @@ public class SecurityConfig {
     return http
         .securityMatcher(EndpointRequest.toAnyEndpoint())
         .authorizeHttpRequests(authz -> authz
-            .requestMatchers(EndpointRequest.to("health", "info")).permitAll()
+            .requestMatchers(EndpointRequest.to("health", "info", "prometheus")).permitAll()
             .anyRequest().authenticated())
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
