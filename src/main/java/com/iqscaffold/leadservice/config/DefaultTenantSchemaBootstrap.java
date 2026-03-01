@@ -54,7 +54,7 @@ public class DefaultTenantSchemaBootstrap implements InitializingBean {
   private final TenantLiquibaseRunner liquibaseRunner;
   private final JdbcTemplate jdbcTemplate;
 
-  @Value("${iqscaffold.bootstrap.default-tenant-schema.tenant-ids:default,demo,acme}")
+  @Value("${iqscaffold.bootstrap.default-tenant-schema.tenant-ids:default}")
   private String tenantIds;
 
   @Value("${iqscaffold.tenancy.schema.prefix:tenant_}")
