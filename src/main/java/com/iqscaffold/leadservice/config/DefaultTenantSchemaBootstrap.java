@@ -10,23 +10,34 @@ import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
- * Bootstrap component that ensures tenant_default schema exists and has migrations applied.
+ * Bootstrap component that ensures tenant schemas exist and have migrations applied.
  * 
- * <p>This component runs after SystemLiquibaseInitializer to ensure that any microservice
- * can bootstrap the default tenant schema without requiring the user-service to run first.
+ * <p>This component handles the case where tenant schemas are created externally
+ * (e.g., by Helm init scripts) but migrations haven't been run yet. It checks
+ * each configured tenant schema and applies migrations if the schema exists but is empty.
+ * 
+ * <p>This is particularly useful in Kubernetes deployments where:
+ * <ul>
+ *   <li>Helm charts create empty tenant schemas (tenant_default, tenant_demo, tenant_acme)</li>
+ *   <li>The application needs to populate those schemas with tables</li>
+ *   <li>Multiple microservices need to provision their own tables in shared tenant schemas</li>
+ * </ul>
  * 
  * <p>Execution order:
  * <ol>
  *   <li>SystemLiquibaseInitializer runs system migrations (public schema)</li>
- *   <li>DefaultTenantSchemaBootstrap creates and migrates tenant_default (this class)</li>
+ *   <li>DefaultTenantSchemaBootstrap creates and migrates tenant schemas (this class)</li>
  *   <li>Application startup completes</li>
  * </ol>
  * 
  * <p>Configuration:
  * <ul>
  *   <li>Enable/disable: {@code iqscaffold.bootstrap.default-tenant-schema.enabled}</li>
- *   <li>Schema name: {@code iqscaffold.tenancy.schema.prefix} + {@code iqscaffold.bootstrap.default-tenant-schema.tenant-id}</li>
+ *   <li>Tenant IDs: {@code iqscaffold.bootstrap.default-tenant-schema.tenant-ids} (comma-separated)</li>
+ *   <li>Schema prefix: {@code iqscaffold.tenancy.schema.prefix}</li>
  * </ul>
  */
 @Component
@@ -43,8 +54,8 @@ public class DefaultTenantSchemaBootstrap implements InitializingBean {
   private final TenantLiquibaseRunner liquibaseRunner;
   private final JdbcTemplate jdbcTemplate;
 
-  @Value("${iqscaffold.bootstrap.default-tenant-schema.tenant-id:default}")
-  private String defaultTenantId;
+  @Value("${iqscaffold.bootstrap.default-tenant-schema.tenant-ids:default,demo,acme}")
+  private String tenantIds;
 
   @Value("${iqscaffold.tenancy.schema.prefix:tenant_}")
   private String schemaPrefix;
@@ -58,42 +69,107 @@ public class DefaultTenantSchemaBootstrap implements InitializingBean {
 
   @Override
   public void afterPropertiesSet() {
-    String defaultSchema = schemaPrefix + defaultTenantId;
+    logger.info("Checking tenant schemas for missing migrations...");
     
-    logger.info("Checking for default tenant schema: {}", defaultSchema);
+    List<String> tenantIdList = List.of(tenantIds.split(","));
+    logger.info("Configured tenant IDs: {}", tenantIdList);
     
-    try {
-      // Check if schema exists
-      boolean schemaExists = checkSchemaExists(defaultSchema);
-      
-      if (!schemaExists) {
-        logger.info("Default tenant schema '{}' does not exist. Creating...", defaultSchema);
-        jdbcTemplate.execute("CREATE SCHEMA IF NOT EXISTS " + defaultSchema);
+    for (String tenantId : tenantIdList) {
+      String trimmedTenantId = tenantId.trim();
+      if (trimmedTenantId.isEmpty()) {
+        continue;
       }
       
-      // Always run migrations to ensure schema is up-to-date
-      logger.info("Running tenant migrations for default schema: {}", defaultSchema);
-      liquibaseRunner.runTenantChangelog(defaultSchema);
-      
-      logger.info("Default tenant schema '{}' is ready", defaultSchema);
-      
-    } catch (Exception e) {
-      logger.error("Failed to bootstrap default tenant schema: {}", defaultSchema, e);
-      throw new IllegalStateException("Default tenant schema bootstrap failed", e);
+      try {
+        checkAndMigrateTenantSchema(trimmedTenantId);
+      } catch (Exception e) {
+        logger.error("Failed to check/migrate schema for tenant: {}", trimmedTenantId, e);
+        // Continue with other tenants instead of failing completely
+      }
+    }
+    
+    logger.info("Tenant schema migration check completed.");
+  }
+
+  private void checkAndMigrateTenantSchema(String tenantId) {
+    String schema = schemaPrefix + tenantId;
+    
+    logger.debug("Checking schema: {} for tenant: {}", schema, tenantId);
+
+    // Check if schema exists
+    boolean schemaExists = checkSchemaExists(schema);
+    
+    if (!schemaExists) {
+      logger.info("Schema {} does not exist for tenant: {}. Creating and migrating...", schema, tenantId);
+      createSchemaAndMigrate(schema, tenantId);
+      return;
+    }
+
+    // Schema exists, check if it has been migrated
+    boolean hasMigrations = checkSchemaHasMigrations(schema);
+    
+    if (!hasMigrations) {
+      logger.info("Schema {} exists but has no migrations for tenant: {}. Running migrations...", schema, tenantId);
+      runMigrations(schema, tenantId);
+    } else {
+      logger.debug("Schema {} already has migrations for tenant: {}. Skipping.", schema, tenantId);
     }
   }
 
-  private boolean checkSchemaExists(String schemaName) {
+  private boolean checkSchemaExists(String schema) {
     try {
-      Integer count = jdbcTemplate.queryForObject(
-          "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = ?",
-          Integer.class,
-          schemaName
-      );
+      String sql = "SELECT EXISTS(SELECT 1 FROM information_schema.schemata WHERE schema_name = ?)";
+      Boolean exists = jdbcTemplate.queryForObject(sql, Boolean.class, schema);
+      return Boolean.TRUE.equals(exists);
+    } catch (Exception e) {
+      logger.warn("Failed to check if schema exists: {}", schema, e);
+      return false;
+    }
+  }
+
+  private boolean checkSchemaHasMigrations(String schema) {
+    try {
+      // Check if databasechangelog table exists in the schema
+      String sql = "SELECT EXISTS(SELECT 1 FROM information_schema.tables " +
+                   "WHERE table_schema = ? AND table_name = 'databasechangelog')";
+      Boolean tableExists = jdbcTemplate.queryForObject(sql, Boolean.class, schema);
+      
+      if (!Boolean.TRUE.equals(tableExists)) {
+        return false;
+      }
+
+      // Check if there are any changesets in the changelog
+      String countSql = String.format("SELECT COUNT(*) FROM %s.databasechangelog", schema);
+      Integer count = jdbcTemplate.queryForObject(countSql, Integer.class);
+      
       return count != null && count > 0;
     } catch (Exception e) {
-      logger.warn("Could not check if schema exists: {}", schemaName, e);
+      logger.debug("Schema {} does not have migrations yet: {}", schema, e.getMessage());
       return false;
+    }
+  }
+
+  private void createSchemaAndMigrate(String schema, String tenantId) {
+    try {
+      logger.info("Creating schema: {}", schema);
+      jdbcTemplate.execute("CREATE SCHEMA IF NOT EXISTS " + schema);
+      logger.info("Schema created: {}", schema);
+      
+      runMigrations(schema, tenantId);
+    } catch (Exception e) {
+      logger.error("Failed to create schema and run migrations for tenant: {}", tenantId, e);
+      throw new IllegalStateException("Failed to create schema: " + schema, e);
+    }
+  }
+
+  private void runMigrations(String schema, String tenantId) {
+    try {
+      logger.info("Running Liquibase migrations for schema: {} (tenant: {})", schema, tenantId);
+      liquibaseRunner.runTenantChangelog(schema);
+      logger.info("Successfully applied migrations to schema: {} (tenant: {})", schema, tenantId);
+    } catch (Exception e) {
+      logger.error("Failed to run migrations for schema: {} (tenant: {})", schema, tenantId, e);
+      throw new IllegalStateException("Failed to run migrations for schema: " + schema, e);
     }
   }
 }
