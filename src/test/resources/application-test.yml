@@ -27,7 +27,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://iqscaffold-user-service:8080/.well-known/jwks.json
+          jwk-set-uri: http://iqscaffold-user-service/.well-known/jwks.json
 
 logging:
   level:
@@ -65,7 +65,7 @@ resilience4j:
 # Test-specific IQ Scaffold properties
 iqscaffold:
   tenant-id-header: X-Tenant-ID
-  user-service-url: http://iqscaffold-user-service:8080
+  user-service-url: http://iqscaffold-user-service
   bootstrap:
     default-tenant-schema:
       enabled: false
