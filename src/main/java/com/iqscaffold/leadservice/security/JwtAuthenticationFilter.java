@@ -73,6 +73,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Priority 1: Extract tenant ID from JWT token
         tenantId = userContext.tenantId();
+        
+        // Log tenant extraction for debugging
+        org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+        logger.info("JWT tenant_id claim: {}", tenantId);
 
         // Add user context to MDC for structured logging
         if (userContext.userId() != null) {
@@ -89,14 +93,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       // Priority 2: Fallback to X-Tenant-ID header (sent by gateway)
       if (tenantId == null || tenantId.trim().isEmpty()) {
         String headerTenantId = request.getHeader(TENANT_ID_HEADER);
+        org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+        logger.info("X-Tenant-ID header: {}", headerTenantId);
+        
         if (headerTenantId != null && !headerTenantId.trim().isEmpty()) {
           tenantId = headerTenantId.trim();
+          logger.info("Using tenant ID from X-Tenant-ID header: {}", tenantId);
         }
       }
 
       // Set tenant context if available
       if (tenantId != null && !tenantId.trim().isEmpty()) {
         TenantContext.setCurrentTenantId(tenantId);
+        org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+        logger.info("Tenant context set to: {}", tenantId);
+      } else {
+        org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+        logger.warn("No tenant context available - JWT tenant_id: {}, X-Tenant-ID header: {}", 
+            tenantId, request.getHeader(TENANT_ID_HEADER));
       }
 
       filterChain.doFilter(request, response);
