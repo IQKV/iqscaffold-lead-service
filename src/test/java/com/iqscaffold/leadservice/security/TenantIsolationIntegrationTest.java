@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iqscaffold.leadservice.config.TestTenantConfiguration;
 import com.iqscaffold.leadservice.lead.Lead;
 import com.iqscaffold.leadservice.lead.LeadRepository;
 import com.iqscaffold.leadservice.lead.dto.LeadDtos;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -35,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Import(TestTenantConfiguration.class)
 @Transactional
 @Disabled("Temporarily disabled - requires tenant schema configuration.")
 class TenantIsolationIntegrationTest {
