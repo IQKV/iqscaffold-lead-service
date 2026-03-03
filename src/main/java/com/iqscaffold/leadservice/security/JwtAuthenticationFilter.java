@@ -61,6 +61,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       org.slf4j.MDC.put("correlationId", correlationId);
     }
 
+    String tenantId = null;
+
     try {
       // Extract user context from JWT if available
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -69,11 +71,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Jwt jwt = jwtAuthToken.getToken();
         UserContext userContext = extractUserContext(jwt);
 
-        // Set tenant context with priority: X-Tenant-ID header > JWT claim
-        String tenantId = extractTenantId(request, userContext);
-        if (tenantId != null) {
-          TenantContext.setCurrentTenantId(tenantId);
-        }
+        // Priority 1: Extract tenant ID from JWT token
+        tenantId = userContext.tenantId();
 
         // Add user context to MDC for structured logging
         if (userContext.userId() != null) {
@@ -87,34 +86,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         request.setAttribute("userContext", userContext);
       }
 
+      // Priority 2: Fallback to X-Tenant-ID header (sent by gateway)
+      if (tenantId == null || tenantId.trim().isEmpty()) {
+        String headerTenantId = request.getHeader(TENANT_ID_HEADER);
+        if (headerTenantId != null && !headerTenantId.trim().isEmpty()) {
+          tenantId = headerTenantId.trim();
+        }
+      }
+
+      // Set tenant context if available
+      if (tenantId != null && !tenantId.trim().isEmpty()) {
+        TenantContext.setCurrentTenantId(tenantId);
+      }
+
       filterChain.doFilter(request, response);
     } finally {
       // Clear context to prevent memory leaks in thread pool
       TenantContext.clear();
       org.slf4j.MDC.clear();
     }
-  }
-
-  /**
-   * Extract tenant ID with priority: X-Tenant-ID header > JWT claim.
-   *
-   * @param request     the HTTP request
-   * @param userContext the user context extracted from JWT
-   * @return the tenant ID or null if not found
-   */
-  private String extractTenantId(HttpServletRequest request, UserContext userContext) {
-    // Priority 1: X-Tenant-ID header (from Gateway)
-    String tenantId = request.getHeader(TENANT_ID_HEADER);
-    if (StringUtils.hasText(tenantId)) {
-      return tenantId.trim();
-    }
-
-    // Priority 2: JWT tenant_id claim
-    if (userContext.tenantId() != null) {
-      return userContext.tenantId();
-    }
-
-    return null;
   }
 
   /**
