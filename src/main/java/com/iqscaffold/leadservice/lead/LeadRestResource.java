@@ -127,7 +127,7 @@ public class LeadRestResource {
       @ApiResponse(responseCode = "401", description = "Unauthorized")
   })
   @GetMapping
-  @PreAuthorize("hasAnyAuthority('CRM_LEAD_MANAGER', 'CRM_ACCESS', 'CRM_ADMIN', 'USER', 'ADMIN', 'SUPER_ADMIN')")
+  @PreAuthorize("hasAnyAuthority('SUPER_ADMIN', 'CRM_LEAD_MANAGER', 'CRM_ACCESS', 'CRM_ADMIN', 'USER', 'ADMIN')")
   public ResponseEntity<Page<LeadDtos.LeadResponse>> listLeads(
       @RequestParam(required = false) String search,
       @RequestParam(required = false) String source,
