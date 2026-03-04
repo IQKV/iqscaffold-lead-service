@@ -27,7 +27,7 @@ public class LeadEntityGraphRestResource {
 
   private final LeadService leadService;
 
-  public LeadEntityGraphController(final LeadService leadService) {
+  public LeadEntityGraphRestResource(final LeadService leadService) {
     this.leadService = leadService;
   }
 
