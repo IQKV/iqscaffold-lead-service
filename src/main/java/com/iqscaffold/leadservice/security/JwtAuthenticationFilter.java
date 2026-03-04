@@ -142,7 +142,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     String firstName = jwt.getClaim(JwtClaimNames.FIRST_NAME);
     String lastName = jwt.getClaim(JwtClaimNames.LAST_NAME);
 
-    logger.debug("Extracted user context - userId: {}, username: {}, tenantId: {}", userId, username, tenantId);
+    logger.debug(String.format("Extracted user context - userId: {}, username: {}, tenantId: {}", userId, username, tenantId));
 
     return new UserContext(
         userId,
