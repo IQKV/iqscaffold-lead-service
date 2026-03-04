@@ -104,12 +104,12 @@ public interface LeadRepository extends JpaRepository<Lead, Long> {
   long countLeadsCreatedSince(@Param("date") LocalDateTime date);
 
   @Query("SELECT l FROM Lead l WHERE "
-         + "(:searchTerm IS NULL OR "
-         + "LOWER(l.firstName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "
-         + "LOWER(l.lastName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "
-         + "LOWER(l.email) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "
-         + "LOWER(l.company) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "
-         + "LOWER(l.phone) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) "
+         + "(:searchTerm IS NULL OR CAST(:searchTerm AS string) IS NULL OR "
+         + "LOWER(l.firstName) LIKE LOWER(CONCAT('%', CAST(:searchTerm AS string), '%')) OR "
+         + "LOWER(l.lastName) LIKE LOWER(CONCAT('%', CAST(:searchTerm AS string), '%')) OR "
+         + "LOWER(l.email) LIKE LOWER(CONCAT('%', CAST(:searchTerm AS string), '%')) OR "
+         + "LOWER(l.company) LIKE LOWER(CONCAT('%', CAST(:searchTerm AS string), '%')) OR "
+         + "LOWER(l.phone) LIKE LOWER(CONCAT('%', CAST(:searchTerm AS string), '%'))) "
          + "AND (:source IS NULL OR l.source = :source) "
          + "AND (:status IS NULL OR l.status = :status) "
          + "AND (:assignedTo IS NULL OR l.assignedTo = :assignedTo)")
@@ -127,12 +127,12 @@ public interface LeadRepository extends JpaRepository<Lead, Long> {
    * Use when search results need note context.
    */
   @Query("SELECT l FROM Lead l WHERE "
-         + "(:searchTerm IS NULL OR "
-         + "LOWER(l.firstName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "
-         + "LOWER(l.lastName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "
-         + "LOWER(l.email) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "
-         + "LOWER(l.company) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR "
-         + "LOWER(l.phone) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) "
+         + "(:searchTerm IS NULL OR CAST(:searchTerm AS string) IS NULL OR "
+         + "LOWER(l.firstName) LIKE LOWER(CONCAT('%', CAST(:searchTerm AS string), '%')) OR "
+         + "LOWER(l.lastName) LIKE LOWER(CONCAT('%', CAST(:searchTerm AS string), '%')) OR "
+         + "LOWER(l.email) LIKE LOWER(CONCAT('%', CAST(:searchTerm AS string), '%')) OR "
+         + "LOWER(l.company) LIKE LOWER(CONCAT('%', CAST(:searchTerm AS string), '%')) OR "
+         + "LOWER(l.phone) LIKE LOWER(CONCAT('%', CAST(:searchTerm AS string), '%'))) "
          + "AND (:source IS NULL OR l.source = :source) "
          + "AND (:status IS NULL OR l.status = :status) "
          + "AND (:assignedTo IS NULL OR l.assignedTo = :assignedTo)")
