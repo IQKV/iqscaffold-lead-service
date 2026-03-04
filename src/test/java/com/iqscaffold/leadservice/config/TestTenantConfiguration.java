@@ -25,7 +25,7 @@ public class TestTenantConfiguration {
 
   @Bean
   public SchemaNameResolver schemaNameResolver() {
-    return new SchemaNameResolver("tenant_");
+    return new SchemaNameResolver("tenant_", "default");
   }
 
   @Bean
