@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/leads/optimized")
 @Tag(name = "Lead Entity Graphs", description = "Optimized lead data fetching using entity graphs")
-public class LeadEntityGraphRestRespurce {
+public class LeadEntityGraphRestResource {
 
   private final LeadService leadService;
 

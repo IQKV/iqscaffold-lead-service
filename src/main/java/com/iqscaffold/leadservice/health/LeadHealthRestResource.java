@@ -21,7 +21,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/leads")
 @Tag(name = "Lead Health", description = "Public health check endpoint for lead service monitoring")
-public class LeadHealthRestRespurce {
+public class LeadHealthRestResource {
 
   @Operation(
       summary = "Lead service health check",
