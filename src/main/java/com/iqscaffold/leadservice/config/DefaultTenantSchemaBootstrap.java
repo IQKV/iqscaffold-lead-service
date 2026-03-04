@@ -16,14 +16,15 @@ import java.util.List;
  * Bootstrap component that ensures tenant schemas exist and have migrations applied.
  * 
  * <p>This component handles the case where tenant schemas are created externally
- * (e.g., by Helm init scripts) but migrations haven't been run yet. It checks
- * each configured tenant schema and applies migrations if the schema exists but is empty.
+ * (e.g., by Helm init scripts) or already exist. It checks each configured tenant 
+ * schema and applies all pending migrations on application startup.
  * 
  * <p>This is particularly useful in Kubernetes deployments where:
  * <ul>
  *   <li>Helm charts create empty tenant schemas (tenant_default, tenant_demo, tenant_acme)</li>
  *   <li>The application needs to populate those schemas with tables</li>
  *   <li>Multiple microservices need to provision their own tables in shared tenant schemas</li>
+ *   <li>New migrations need to be applied to existing tenant schemas</li>
  * </ul>
  * 
  * <p>Execution order:
@@ -105,15 +106,9 @@ public class DefaultTenantSchemaBootstrap implements InitializingBean {
       return;
     }
 
-    // Schema exists, check if it has been migrated
-    boolean hasMigrations = checkSchemaHasMigrations(schema);
-    
-    if (!hasMigrations) {
-      logger.info("Schema {} exists but has no migrations for tenant: {}. Running migrations...", schema, tenantId);
-      runMigrations(schema, tenantId);
-    } else {
-      logger.debug("Schema {} already has migrations for tenant: {}. Skipping.", schema, tenantId);
-    }
+    // Schema exists, always run migrations to ensure all changesets are applied
+    logger.info("Running migrations for schema: {} (tenant: {})", schema, tenantId);
+    runMigrations(schema, tenantId);
   }
 
   private boolean checkSchemaExists(String schema) {
@@ -127,27 +122,6 @@ public class DefaultTenantSchemaBootstrap implements InitializingBean {
     }
   }
 
-  private boolean checkSchemaHasMigrations(String schema) {
-    try {
-      // Check if databasechangelog table exists in the schema
-      String sql = "SELECT EXISTS(SELECT 1 FROM information_schema.tables " +
-                   "WHERE table_schema = ? AND table_name = 'databasechangelog')";
-      Boolean tableExists = jdbcTemplate.queryForObject(sql, Boolean.class, schema);
-      
-      if (!Boolean.TRUE.equals(tableExists)) {
-        return false;
-      }
-
-      // Check if there are any changesets in the changelog
-      String countSql = String.format("SELECT COUNT(*) FROM %s.databasechangelog", schema);
-      Integer count = jdbcTemplate.queryForObject(countSql, Integer.class);
-      
-      return count != null && count > 0;
-    } catch (Exception e) {
-      logger.debug("Schema {} does not have migrations yet: {}", schema, e.getMessage());
-      return false;
-    }
-  }
 
   private void createSchemaAndMigrate(String schema, String tenantId) {
     try {
