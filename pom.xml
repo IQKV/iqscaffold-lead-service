@@ -282,6 +282,7 @@
                         <exclude>**/tenancy/*Resolver.class</exclude>
                         <exclude>**/tenancy/*Initializer.class</exclude>
                         <exclude>**/tenancy/*Runner.class</exclude>
+                        <exclude>**/tenancy/SchemaPerTenantConnectionProvider.class</exclude>
                         
                         <!-- Feature flag infrastructure -->
                         <exclude>**/feature/FeatureContext.class</exclude>
