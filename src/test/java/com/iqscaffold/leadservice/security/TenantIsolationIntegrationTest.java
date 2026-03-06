@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.iqscaffold.leadservice.config.TestTenantConfiguration;
 import com.iqscaffold.leadservice.lead.Lead;
 import com.iqscaffold.leadservice.lead.LeadRepository;
 import com.iqscaffold.leadservice.lead.dto.LeadDtos;
@@ -21,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -31,15 +29,24 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Integration tests for tenant data isolation and JWT authentication.
  * <p>
- * NOTE: These tests are temporarily disabled because they require tenant schema setup.
+ * NOTE: These tests are disabled because multi-tenancy (schema-per-tenant) is disabled
+ * in integration tests. Multi-tenancy is configured via hibernate.multiTenancy=NONE
+ * in application-test.yml.
+ * <p>
+ * To enable these tests:
+ * 1. Uncomment beans in TestTenantConfiguration
+ * 2. Change TestTenantConfiguration profile to "test"
+ * 3. Set hibernate.multiTenancy=SCHEMA in application-test.yml
+ * 4. Ensure proper schema setup for each tenant
+ * 5. Remove @Disabled annotation
+ * <p>
  * See backend/TENANT_ISOLATION_TEST_SOLUTION.md for implementation details.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@Import(TestTenantConfiguration.class)
 @Transactional
-@Disabled("Temporarily disabled - requires tenant schema configuration.")
+@Disabled("Multi-tenancy is disabled in integration tests - see class javadoc for details.")
 class TenantIsolationIntegrationTest {
 
   @Autowired

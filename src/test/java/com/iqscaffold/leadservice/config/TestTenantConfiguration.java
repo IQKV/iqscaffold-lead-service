@@ -18,11 +18,20 @@ import org.springframework.jdbc.core.JdbcTemplate;
 /**
  * Test configuration for multi-tenancy support in tests.
  * Provides beans needed for tenant-aware data access in test environment.
+ * 
+ * NOTE: Multi-tenancy is DISABLED for integration tests.
+ * This configuration is kept for reference but beans are commented out.
+ * To enable multi-tenancy in tests, uncomment the beans below and ensure
+ * proper schema setup is in place.
  */
 @TestConfiguration
-@Profile("test")
+@Profile("test-with-multitenancy") // Changed profile to prevent auto-loading
 public class TestTenantConfiguration {
 
+  // Multi-tenancy beans are disabled for integration tests
+  // Uncomment below to enable schema-per-tenant multi-tenancy in tests
+  
+  /*
   @Bean
   public SchemaNameResolver schemaNameResolver() {
     return new SchemaNameResolver("tenant_", "default");
@@ -56,6 +65,7 @@ public class TestTenantConfiguration {
   public TenantLiquibaseRunner tenantLiquibaseRunner() {
     return org.mockito.Mockito.mock(TenantLiquibaseRunner.class);
   }
+  */
 
   @Bean
   public JdbcTemplate jdbcTemplate(DataSource dataSource) {

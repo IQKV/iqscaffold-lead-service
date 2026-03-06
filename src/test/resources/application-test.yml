@@ -15,7 +15,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
-        multiTenancy: NONE  # Disable multi-tenancy for tests
+        # Multi-tenancy is DISABLED for integration tests
+        # All tests run in a single schema without tenant isolation
+        # To enable: set to SCHEMA and configure TestTenantConfiguration
+        multiTenancy: NONE
         cache:
           use_second_level_cache: false  # Disable second level cache for tests
           use_query_cache: false
