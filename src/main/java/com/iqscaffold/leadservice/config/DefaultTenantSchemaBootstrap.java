@@ -40,6 +40,8 @@ import java.util.List;
  *   <li>Tenant IDs: {@code iqscaffold.bootstrap.default-tenant-schema.tenant-ids} (comma-separated)</li>
  *   <li>Schema prefix: {@code iqscaffold.tenancy.schema.prefix}</li>
  * </ul>
+ * 
+ * <p>This component is only active when multi-tenancy is enabled.
  */
 @Component
 @Order(50) // Run after SystemLiquibaseInitializer (MIN_VALUE) but before application logic
@@ -48,6 +50,7 @@ import java.util.List;
     havingValue = "true",
     matchIfMissing = true
 )
+@ConditionalOnProperty(name = "spring.jpa.properties.hibernate.multiTenancy", havingValue = "SCHEMA", matchIfMissing = true)
 public class DefaultTenantSchemaBootstrap implements InitializingBean {
 
   private static final Logger logger = LoggerFactory.getLogger(DefaultTenantSchemaBootstrap.class);

@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
  * </ol>
  * 
  * <p>This initializer is disabled in test profiles to avoid running migrations
- * during unit and integration tests.
+ * during unit and integration tests. It's also disabled when multi-tenancy is disabled.
  * 
  * @author iqscaffold
  * @since 1.0
@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(Integer.MIN_VALUE) // Run as early as possible
 @ConditionalOnProperty(name = "iqscaffold.liquibase.system-schema.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "spring.jpa.properties.hibernate.multiTenancy", havingValue = "SCHEMA", matchIfMissing = true)
 public class SystemLiquibaseInitializer implements InitializingBean {
 
   private final TenantLiquibaseRunner runner;

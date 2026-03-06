@@ -4,14 +4,18 @@ import com.iqscaffold.leadservice.tenancy.TenantLiquibaseRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 /**
  * Listener for tenant events from the User Service.
  * Handles tenant lifecycle events to provision lead database schemas.
+ * 
+ * This component is only active when multi-tenancy is enabled (hibernate.multiTenancy=SCHEMA).
  */
 @Component
+@ConditionalOnProperty(name = "spring.jpa.properties.hibernate.multiTenancy", havingValue = "SCHEMA", matchIfMissing = true)
 public class TenantEventListener {
 
   private static final Logger log = LoggerFactory.getLogger(TenantEventListener.class);
