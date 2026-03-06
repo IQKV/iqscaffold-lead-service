@@ -5,14 +5,20 @@ import javax.sql.DataSource;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.hibernate.autoconfigure.HibernatePropertiesCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Configuration for tenant-aware JPA and Hibernate settings. Provides tenant context resolution for multi-tenant data isolation.
+ * Configuration for tenant-aware JPA and Hibernate settings. 
+ * Provides tenant context resolution for multi-tenant data isolation.
+ * 
+ * This configuration is disabled when hibernate.multiTenancy is set to NONE,
+ * which is the case in test environments.
  */
 @Configuration
+@ConditionalOnProperty(name = "spring.jpa.properties.hibernate.multiTenancy", havingValue = "SCHEMA", matchIfMissing = true)
 public class TenantConfig {
 
   /**

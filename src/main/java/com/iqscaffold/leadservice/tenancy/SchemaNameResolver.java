@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,9 +30,12 @@ import org.springframework.stereotype.Component;
  * null/blank    → "public"
  * </pre>
  *
+ * <p>This component is only active when multi-tenancy is enabled (hibernate.multiTenancy=SCHEMA).
+ *
  * @see SchemaTenantIdentifierResolver
  */
 @Component
+@ConditionalOnProperty(name = "spring.jpa.properties.hibernate.multiTenancy", havingValue = "SCHEMA", matchIfMissing = true)
 public class SchemaNameResolver {
 
   private final String prefix;

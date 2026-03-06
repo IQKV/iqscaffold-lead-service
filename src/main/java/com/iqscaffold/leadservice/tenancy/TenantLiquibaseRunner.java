@@ -6,6 +6,7 @@ import liquibase.integration.spring.SpringLiquibase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -19,10 +20,13 @@ import org.springframework.util.StringUtils;
  * <p>Context filtering is supported to control which changesets run in different environments.
  * Use the {@code iqscaffold.liquibase.contexts} property to specify contexts.
  *
+ * <p>This service is only active when multi-tenancy is enabled (hibernate.multiTenancy=SCHEMA).
+ *
  * @author iqscaffold
  * @since 1.0
  */
 @Service
+@ConditionalOnProperty(name = "spring.jpa.properties.hibernate.multiTenancy", havingValue = "SCHEMA", matchIfMissing = true)
 public class TenantLiquibaseRunner {
 
   private static final Logger logger = LoggerFactory.getLogger(TenantLiquibaseRunner.class);
