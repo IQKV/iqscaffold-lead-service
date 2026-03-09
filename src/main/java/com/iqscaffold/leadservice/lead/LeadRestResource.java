@@ -229,6 +229,55 @@ public class LeadRestResource {
 
     return ResponseEntity.ok(response);
   }
+  /**
+   * Qualifies a lead.
+   * <p>
+   * Marks a lead as qualified, indicating it meets the criteria for conversion.
+   * This updates the lead's qualified status and records the qualification timestamp.
+   *
+   * @param id The lead ID to qualify
+   * @return The updated lead
+   */
+  @Operation(
+      summary = "Qualify lead",
+      description = "Marks a lead as qualified, indicating it meets the criteria for conversion")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Lead qualified successfully"),
+      @ApiResponse(responseCode = "401", description = "Unauthorized"),
+      @ApiResponse(responseCode = "404", description = "Lead not found")
+  })
+  @PostMapping("/{id}/qualify")
+  @PreAuthorize("hasAnyAuthority('CRM_LEAD_MANAGER', 'CRM_ACCESS', 'CRM_ADMIN', 'USER', 'ADMIN', 'SUPER_ADMIN')")
+  public ResponseEntity<LeadDtos.LeadResponse> qualifyLead(@PathVariable Long id) {
+    Lead lead = leadService.qualifyLead(id);
+    LeadDtos.LeadResponse response = LeadMapper.toResponse(lead);
+    return ResponseEntity.ok(response);
+  }
+
+  /**
+   * Disqualifies a lead.
+   * <p>
+   * Marks a lead as not qualified, removing its qualification status.
+   *
+   * @param id The lead ID to disqualify
+   * @return The updated lead
+   */
+  @Operation(
+      summary = "Disqualify lead",
+      description = "Marks a lead as not qualified, removing its qualification status")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Lead disqualified successfully"),
+      @ApiResponse(responseCode = "401", description = "Unauthorized"),
+      @ApiResponse(responseCode = "404", description = "Lead not found")
+  })
+  @PostMapping("/{id}/disqualify")
+  @PreAuthorize("hasAnyAuthority('CRM_LEAD_MANAGER', 'CRM_ACCESS', 'CRM_ADMIN', 'USER', 'ADMIN', 'SUPER_ADMIN')")
+  public ResponseEntity<LeadDtos.LeadResponse> disqualifyLead(@PathVariable Long id) {
+    Lead lead = leadService.disqualifyLead(id);
+    LeadDtos.LeadResponse response = LeadMapper.toResponse(lead);
+    return ResponseEntity.ok(response);
+  }
+
 
   /**
    * Gets lead counts grouped by source.
