@@ -99,30 +99,30 @@ This is the lead management hub for the IQ Scaffold CRM platform. It centralizes
 
 1. **Start infrastructure services**:
 
-   <details>
-   <summary>Click to expand bash commands</summary>
+    <details>
+    <summary>Click to expand bash commands</summary>
 
-   ```bash
-   docker compose up -d postgres-lead redis-lead rabbitmq-lead
-   ```
+    ```bash
+    docker compose up -d postgres-lead redis-lead rabbitmq-lead
+    ```
 
-   </details>
+    </details>
 
 2. **Run the application**:
 
-   <details>
-   <summary>Click to expand bash commands</summary>
+    <details>
+    <summary>Click to expand bash commands</summary>
 
-   ```bash
-   mvn spring-boot:run -Dspring-boot.run.profiles=local
-   ```
+    ```bash
+    mvn spring-boot:run -Dspring-boot.run.profiles=local
+    ```
 
-   </details>
+    </details>
 
 3. **Access the application**:
-   - API: http://localhost:8080
-   - Swagger UI: http://localhost:8080/swagger-ui.html
-   - Health Check: http://localhost:8080/actuator/health
+    - API: http://localhost:8080
+    - Swagger UI: http://localhost:8080/swagger-ui.html
+    - Health Check: http://localhost:8080/actuator/health
 
 ### Docker Development
 

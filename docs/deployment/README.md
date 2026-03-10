@@ -224,10 +224,10 @@ Production deployments include:
 
 - Prometheus ServiceMonitor
 - Alerting rules for service health:
-  - **LeadServiceDown**: Service unavailable for >1 minute
-  - **LeadServiceHighMemory**: Memory usage >80% for >5 minutes
-  - **LeadServiceHighLatency**: 95th percentile latency >2 seconds
-  - **LeadServiceCircuitBreakerOpen**: Circuit breaker open for >1 minute
+    - **LeadServiceDown**: Service unavailable for >1 minute
+    - **LeadServiceHighMemory**: Memory usage >80% for >5 minutes
+    - **LeadServiceHighLatency**: 95th percentile latency >2 seconds
+    - **LeadServiceCircuitBreakerOpen**: Circuit breaker open for >1 minute
 - Grafana dashboards for lead metrics
 
 ### Troubleshooting
@@ -236,47 +236,47 @@ Production deployments include:
 
 1. **Database Connection Failures**
 
-   ```bash
-   kubectl logs deployment/iqscaffold-lead-service -n iqscaffold-dev-env
-   ```
+    ```bash
+    kubectl logs deployment/iqscaffold-lead-service -n iqscaffold-dev-env
+    ```
 
 2. **Redis Connection Issues**
 
-   ```bash
-   # Check Redis connectivity
-   kubectl exec -it deployment/iqscaffold-lead-service -n iqscaffold-dev-env -- \
-     redis-cli -h iqscaffold-redis -p 6379 ping
+    ```bash
+    # Check Redis connectivity
+    kubectl exec -it deployment/iqscaffold-lead-service -n iqscaffold-dev-env -- \
+      redis-cli -h iqscaffold-redis -p 6379 ping
 
-   # Verify Redis password configuration
-   kubectl get secret iqscaffold-lead-service-secrets -o yaml | grep redis
-   ```
+    # Verify Redis password configuration
+    kubectl get secret iqscaffold-lead-service-secrets -o yaml | grep redis
+    ```
 
 3. **Check Configuration**
 
-   ```bash
-   kubectl describe configmap iqscaffold-lead-service-config -n iqscaffold-dev-env
-   ```
+    ```bash
+    kubectl describe configmap iqscaffold-lead-service-config -n iqscaffold-dev-env
+    ```
 
 4. **Test Health Endpoints**
 
-   ```bash
-   kubectl port-forward deployment/iqscaffold-lead-service 8081:8081 -n iqscaffold-dev-env
-   curl http://localhost:8081/actuator/health
-   ```
+    ```bash
+    kubectl port-forward deployment/iqscaffold-lead-service 8081:8081 -n iqscaffold-dev-env
+    curl http://localhost:8081/actuator/health
+    ```
 
 5. **Lead Scoring Issues**
 
-   ```bash
-   # Check lead configuration
-   kubectl get configmap iqscaffold-lead-service-config -o yaml | grep LEAD_
-   ```
+    ```bash
+    # Check lead configuration
+    kubectl get configmap iqscaffold-lead-service-config -o yaml | grep LEAD_
+    ```
 
 6. **Service Integration Issues**
-   ```bash
-   # Test service connectivity
-   kubectl exec -it deployment/iqscaffold-lead-service -n iqscaffold-dev-env -- \
-     curl http://iqscaffold-contact-service/actuator/health
-   ```
+    ```bash
+    # Test service connectivity
+    kubectl exec -it deployment/iqscaffold-lead-service -n iqscaffold-dev-env -- \
+      curl http://iqscaffold-contact-service/actuator/health
+    ```
 
 #### Rollback
 
