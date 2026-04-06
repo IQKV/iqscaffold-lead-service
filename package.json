@@ -1,5 +1,5 @@
 {
-    "name": "@iqscaffold/lead-service",
+    "name": "@iqkv/lead-service",
     "version": "0.0.0",
     "private": true,
     "description": "Provide an optional Git commit hooks.",
