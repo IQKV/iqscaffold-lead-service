@@ -14,10 +14,10 @@ The IQ Scaffold Lead Service is deployed using Helm charts and automated CI/CD p
 
 | Environment | Namespace                   | Purpose                      |
 | ----------- | --------------------------- | ---------------------------- |
-| Dev         | `iqscaffold-dev-env`        | Development and WIP branches |
-| Test        | `iqscaffold-test-env`       | Feature branch testing       |
-| Staging     | `iqscaffold-staging-env`    | Pre-production validation    |
-| Production  | `iqscaffold-production-env` | Live production environment  |
+| Dev         | `iqkvdev-dev-env`        | Development and WIP branches |
+| Test        | `iqkvdev-test-env`       | Feature branch testing       |
+| Staging     | `iqkvdev-staging-env`    | Pre-production validation    |
+| Production  | `iqkvdev-production-env` | Live production environment  |
 
 ### Automated Deployment (CI/CD)
 
@@ -88,7 +88,7 @@ helm upgrade --install --atomic --wait --timeout 5m iqscaffold-lead-service ./ \
   --set infraServices.redis.password=${INFRA_REDIS_PASSWORD} \
   --set infraServices.rabbitmq.password=${INFRA_RABBITMQ_PASSWORD} \
   --set config.lead.security.jwt.secretKey=${JWT_SECRET_KEY} \
-  --namespace iqscaffold-dev-env
+  --namespace iqkvdev-dev-env
 
 # Production (Tagged releases)
 helm upgrade --install --atomic --wait --timeout 5m iqscaffold-lead-service ./ \
@@ -99,7 +99,7 @@ helm upgrade --install --atomic --wait --timeout 5m iqscaffold-lead-service ./ \
   --set infraServices.redis.password=${INFRA_REDIS_PASSWORD} \
   --set infraServices.rabbitmq.password=${INFRA_RABBITMQ_PASSWORD} \
   --set config.lead.security.jwt.secretKey=${JWT_SECRET_KEY} \
-  --namespace iqscaffold-production-env
+  --namespace iqkvdev-production-env
 ```
 
 </details>
@@ -141,7 +141,7 @@ helm upgrade --install lead-service ./ \
   --set infraServices.redis.password="your-redis-password" \
   --set infraServices.rabbitmq.password="your-rabbitmq-password" \
   --set config.lead.security.jwt.secretKey="your-secure-symmetric-key" \
-  --namespace iqscaffold-dev-env \
+  --namespace iqkvdev-dev-env \
   --create-namespace
 ```
 
@@ -156,7 +156,7 @@ helm upgrade --install lead-service ./ \
   --set infraServices.redis.password="your-redis-password" \
   --set infraServices.rabbitmq.password="your-rabbitmq-password" \
   --set config.lead.security.jwt.secretKey="your-secure-symmetric-key" \
-  --namespace iqscaffold-dev-env \
+  --namespace iqkvdev-dev-env \
   --create-namespace
 ```
 
@@ -169,7 +169,7 @@ helm upgrade --install lead-service ./ \
   --set infraServices.redis.password="${REDIS_PASSWORD}" \
   --set infraServices.rabbitmq.password="${RABBITMQ_PASSWORD}" \
   --set config.lead.security.jwt.secretKey="${JWT_SECRET_KEY}" \
-  --namespace iqscaffold-production-env \
+  --namespace iqkvdev-production-env \
   --create-namespace
 ```
 
@@ -237,14 +237,14 @@ Production deployments include:
 1. **Database Connection Failures**
 
     ```bash
-    kubectl logs deployment/iqscaffold-lead-service -n iqscaffold-dev-env
+    kubectl logs deployment/iqscaffold-lead-service -n iqkvdev-dev-env
     ```
 
 2. **Redis Connection Issues**
 
     ```bash
     # Check Redis connectivity
-    kubectl exec -it deployment/iqscaffold-lead-service -n iqscaffold-dev-env -- \
+    kubectl exec -it deployment/iqscaffold-lead-service -n iqkvdev-dev-env -- \
       redis-cli -h iqscaffold-redis -p 6379 ping
 
     # Verify Redis password configuration
@@ -254,13 +254,13 @@ Production deployments include:
 3. **Check Configuration**
 
     ```bash
-    kubectl describe configmap iqscaffold-lead-service-config -n iqscaffold-dev-env
+    kubectl describe configmap iqscaffold-lead-service-config -n iqkvdev-dev-env
     ```
 
 4. **Test Health Endpoints**
 
     ```bash
-    kubectl port-forward deployment/iqscaffold-lead-service 8081:8081 -n iqscaffold-dev-env
+    kubectl port-forward deployment/iqscaffold-lead-service 8081:8081 -n iqkvdev-dev-env
     curl http://localhost:8081/actuator/health
     ```
 
@@ -274,7 +274,7 @@ Production deployments include:
 6. **Service Integration Issues**
     ```bash
     # Test service connectivity
-    kubectl exec -it deployment/iqscaffold-lead-service -n iqscaffold-dev-env -- \
+    kubectl exec -it deployment/iqscaffold-lead-service -n iqkvdev-dev-env -- \
       curl http://iqscaffold-contact-service/actuator/health
     ```
 
@@ -282,10 +282,10 @@ Production deployments include:
 
 ```bash
 # Rollback to previous version
-helm rollback iqscaffold-lead-service -n iqscaffold-production-env
+helm rollback iqscaffold-lead-service -n iqkvdev-production-env
 
 # Or uninstall completely
-helm uninstall iqscaffold-lead-service -n iqscaffold-production-env
+helm uninstall iqscaffold-lead-service -n iqkvdev-production-env
 ```
 
 ### Security
