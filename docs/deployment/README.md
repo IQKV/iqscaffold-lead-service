@@ -31,8 +31,8 @@ The service uses Drone CI/CD pipeline with 10 stages:
 1. **VerifyCode** - Code quality, tests, static analysis
 2. **PublishArtifacts** - Maven artifacts to Nexus
 3. **PublishDockerImage** - Container images to registry
-4. **DeployWorkInProgressOnDev** - WIP branch auto-deployment
-5. **RollbackWorkInProgressOnDev** - WIP rollback
+4. **DeployWorkInProgressToTestEnv** - WIP branch auto-deployment
+5. **RollbackWorkInProgressFromTestEnv** - WIP rollback
 6. **PromoteFeatureDeployment** - Feature branch promotion
 7. **RollbackFeatureDeployment** - Feature rollback
 8. **PromoteDeployment** - Release promotion
@@ -82,7 +82,7 @@ The pipeline uses these Helm commands for deployment:
 # Development (WIP branches)
 helm upgrade --install --atomic --wait --timeout 5m iqscaffold-lead-service ./ \
   --values ./values.yaml \
-  --values ./values-dev.yaml \
+  --values ./values-test.yaml \
   --set image.tag=wip \
   --set infraServices.postgresql.password=${INFRA_POSTGRESQL_PASSWORD} \
   --set infraServices.redis.password=${INFRA_REDIS_PASSWORD} \
@@ -237,14 +237,14 @@ Production deployments include:
 1. **Database Connection Failures**
 
     ```bash
-    kubectl logs deployment/iqscaffold-lead-service -n iqkvdev-dev-env
+    kubectl logs deployment/iqscaffold-lead-service -n iqkvdev-test-env
     ```
 
 2. **Redis Connection Issues**
 
     ```bash
     # Check Redis connectivity
-    kubectl exec -it deployment/iqscaffold-lead-service -n iqkvdev-dev-env -- \
+    kubectl exec -it deployment/iqscaffold-lead-service -n iqkvdev-test-env -- \
       redis-cli -h iqscaffold-redis -p 6379 ping
 
     # Verify Redis password configuration
@@ -254,13 +254,13 @@ Production deployments include:
 3. **Check Configuration**
 
     ```bash
-    kubectl describe configmap iqscaffold-lead-service-config -n iqkvdev-dev-env
+    kubectl describe configmap iqscaffold-lead-service-config -n iqkvdev-test-env
     ```
 
 4. **Test Health Endpoints**
 
     ```bash
-    kubectl port-forward deployment/iqscaffold-lead-service 8081:8081 -n iqkvdev-dev-env
+    kubectl port-forward deployment/iqscaffold-lead-service 8081:8081 -n iqkvdev-test-env
     curl http://localhost:8081/actuator/health
     ```
 
@@ -274,7 +274,7 @@ Production deployments include:
 6. **Service Integration Issues**
     ```bash
     # Test service connectivity
-    kubectl exec -it deployment/iqscaffold-lead-service -n iqkvdev-dev-env -- \
+    kubectl exec -it deployment/iqscaffold-lead-service -n iqkvdev-test-env -- \
       curl http://iqscaffold-contact-service/actuator/health
     ```
 
