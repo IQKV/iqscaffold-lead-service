@@ -14,7 +14,7 @@ The IQ Scaffold Lead Service is deployed using Helm charts and automated CI/CD p
 
 | Environment | Namespace                | Purpose                      |
 | ----------- | ------------------------ | ---------------------------- |
-| Dev         | `iqkvdev-dev-env`        | Development and WIP branches |
+| Dev         | `iqkvdev-test-env`        | Development and WIP branches |
 | Test        | `iqkvdev-test-env`       | Feature branch testing       |
 | Staging     | `iqkvdev-staging-env`    | Pre-production validation    |
 | Production  | `iqkvdev-production-env` | Live production environment  |
@@ -88,7 +88,7 @@ helm upgrade --install --atomic --wait --timeout 5m iqscaffold-lead-service ./ \
   --set infraServices.redis.password=${INFRA_REDIS_PASSWORD} \
   --set infraServices.rabbitmq.password=${INFRA_RABBITMQ_PASSWORD} \
   --set config.lead.security.jwt.secretKey=${JWT_SECRET_KEY} \
-  --namespace iqkvdev-dev-env
+  --namespace iqkvdev-test-env
 
 # Production (Tagged releases)
 helm upgrade --install --atomic --wait --timeout 5m iqscaffold-lead-service ./ \
@@ -141,7 +141,7 @@ helm upgrade --install lead-service ./ \
   --set infraServices.redis.password="your-redis-password" \
   --set infraServices.rabbitmq.password="your-rabbitmq-password" \
   --set config.lead.security.jwt.secretKey="your-secure-symmetric-key" \
-  --namespace iqkvdev-dev-env \
+  --namespace iqkvdev-test-env \
   --create-namespace
 ```
 
@@ -156,7 +156,7 @@ helm upgrade --install lead-service ./ \
   --set infraServices.redis.password="your-redis-password" \
   --set infraServices.rabbitmq.password="your-rabbitmq-password" \
   --set config.lead.security.jwt.secretKey="your-secure-symmetric-key" \
-  --namespace iqkvdev-dev-env \
+  --namespace iqkvdev-test-env \
   --create-namespace
 ```
 
