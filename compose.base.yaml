@@ -92,7 +92,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-      target: builder
+      target: runtime
     image: iqscaffold/iqscaffold-lead-service:dev
     container_name: iqscaffold-lead-service-dev
     environment:

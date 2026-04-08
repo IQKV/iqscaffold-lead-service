@@ -29,3 +29,7 @@ volumes:
     name: iqscaffold_lead_redis_data_dev
   rabbitmq_lead_data:
     name: iqscaffold_lead_rabbitmq_data_dev
+  lead_logs:
+    name: iqscaffold_lead_logs_dev
+  lead_tmp:
+    name: iqscaffold_lead_tmp_dev

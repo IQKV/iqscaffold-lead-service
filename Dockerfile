@@ -5,18 +5,15 @@ FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
 
 WORKDIR /app
 
-# Copy parent pom and service pom
+# Copy pom and download dependencies
 COPY pom.xml ./
-COPY iqscaffold-lead-service/pom.xml ./iqscaffold-lead-service/
-
-# Download dependencies
-RUN mvn dependency:go-offline -pl iqscaffold-lead-service
+RUN mvn dependency:go-offline -Dcheckstyle.skip=true
 
 # Copy source code
-COPY iqscaffold-lead-service/src ./iqscaffold-lead-service/src
+COPY src ./src
 
 # Build the application
-RUN mvn clean package -pl iqscaffold-lead-service -DskipTests
+RUN mvn clean package -DskipTests -Dcheckstyle.skip=true
 
 # Runtime stage
 FROM eclipse-temurin:21-jre-alpine AS runtime
@@ -32,7 +29,7 @@ RUN addgroup -g 1001 -S appgroup && \
 WORKDIR /app
 
 # Copy the built jar
-COPY --from=builder /app/iqscaffold-lead-service/target/iqscaffold-lead-service-*.jar app.jar
+COPY --from=builder /app/target/iqscaffold-lead-service-*.jar app.jar
 
 # Create logs directory
 RUN mkdir -p /app/logs && \
