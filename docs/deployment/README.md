@@ -14,9 +14,9 @@ The IQ Scaffold Lead Service is deployed using Helm charts and automated CI/CD p
 
 | Environment | Namespace         | Purpose                     |
 | ----------- | ----------------- | --------------------------- |
-| Test        | `iqkvdev-sit-env` | Feature branch testing      |
-| Staging     | `iqkvdev-uat-env` | Pre-production validation   |
-| Production  | `iqkvdev-prd-env` | Live production environment |
+| Test        | `iqkv-sit-env` | Feature branch testing      |
+| Staging     | `iqkv-uat-env` | Pre-production validation   |
+| Production  | `iqkv-prd-env` | Live production environment |
 
 ### Automated Deployment (CI/CD)
 
@@ -87,7 +87,7 @@ helm upgrade --install --atomic --wait --timeout 5m iqscaffold-lead-service ./ \
   --set infraServices.redis.password=${INFRA_REDIS_PASSWORD} \
   --set infraServices.rabbitmq.password=${INFRA_RABBITMQ_PASSWORD} \
   --set config.lead.security.jwt.secretKey=${JWT_SECRET_KEY} \
-  --namespace iqkvdev-sit-env
+  --namespace iqkv-sit-env
 
 # Production (Tagged releases)
 helm upgrade --install --atomic --wait --timeout 5m iqscaffold-lead-service ./ \
@@ -98,7 +98,7 @@ helm upgrade --install --atomic --wait --timeout 5m iqscaffold-lead-service ./ \
   --set infraServices.redis.password=${INFRA_REDIS_PASSWORD} \
   --set infraServices.rabbitmq.password=${INFRA_RABBITMQ_PASSWORD} \
   --set config.lead.security.jwt.secretKey=${JWT_SECRET_KEY} \
-  --namespace iqkvdev-prd-env
+  --namespace iqkv-prd-env
 ```
 
 </details>
@@ -140,7 +140,7 @@ helm upgrade --install lead-service ./ \
   --set infraServices.redis.password="your-redis-password" \
   --set infraServices.rabbitmq.password="your-rabbitmq-password" \
   --set config.lead.security.jwt.secretKey="your-secure-symmetric-key" \
-  --namespace iqkvdev-sit-env \
+  --namespace iqkv-sit-env \
   --create-namespace
 ```
 
@@ -155,7 +155,7 @@ helm upgrade --install lead-service ./ \
   --set infraServices.redis.password="your-redis-password" \
   --set infraServices.rabbitmq.password="your-rabbitmq-password" \
   --set config.lead.security.jwt.secretKey="your-secure-symmetric-key" \
-  --namespace iqkvdev-sit-env \
+  --namespace iqkv-sit-env \
   --create-namespace
 ```
 
@@ -168,7 +168,7 @@ helm upgrade --install lead-service ./ \
   --set infraServices.redis.password="${REDIS_PASSWORD}" \
   --set infraServices.rabbitmq.password="${RABBITMQ_PASSWORD}" \
   --set config.lead.security.jwt.secretKey="${JWT_SECRET_KEY}" \
-  --namespace iqkvdev-prd-env \
+  --namespace iqkv-prd-env \
   --create-namespace
 ```
 
@@ -236,14 +236,14 @@ Production deployments include:
 1. **Database Connection Failures**
 
     ```bash
-    kubectl logs deployment/iqscaffold-lead-service -n iqkvdev-sit-env
+    kubectl logs deployment/iqscaffold-lead-service -n iqkv-sit-env
     ```
 
 2. **Redis Connection Issues**
 
     ```bash
     # Check Redis connectivity
-    kubectl exec -it deployment/iqscaffold-lead-service -n iqkvdev-sit-env -- \
+    kubectl exec -it deployment/iqscaffold-lead-service -n iqkv-sit-env -- \
       redis-cli -h iqscaffold-redis -p 6379 ping
 
     # Verify Redis password configuration
@@ -253,13 +253,13 @@ Production deployments include:
 3. **Check Configuration**
 
     ```bash
-    kubectl describe configmap iqscaffold-lead-service-config -n iqkvdev-sit-env
+    kubectl describe configmap iqscaffold-lead-service-config -n iqkv-sit-env
     ```
 
 4. **Test Health Endpoints**
 
     ```bash
-    kubectl port-forward deployment/iqscaffold-lead-service 8081:8081 -n iqkvdev-sit-env
+    kubectl port-forward deployment/iqscaffold-lead-service 8081:8081 -n iqkv-sit-env
     curl http://localhost:8081/actuator/health
     ```
 
@@ -273,7 +273,7 @@ Production deployments include:
 6. **Service Integration Issues**
     ```bash
     # Test service connectivity
-    kubectl exec -it deployment/iqscaffold-lead-service -n iqkvdev-sit-env -- \
+    kubectl exec -it deployment/iqscaffold-lead-service -n iqkv-sit-env -- \
       curl http://iqscaffold-contact-service/actuator/health
     ```
 
@@ -281,10 +281,10 @@ Production deployments include:
 
 ```bash
 # Rollback to previous version
-helm rollback iqscaffold-lead-service -n iqkvdev-prd-env
+helm rollback iqscaffold-lead-service -n iqkv-prd-env
 
 # Or uninstall completely
-helm uninstall iqscaffold-lead-service -n iqkvdev-prd-env
+helm uninstall iqscaffold-lead-service -n iqkv-prd-env
 ```
 
 ### Security
