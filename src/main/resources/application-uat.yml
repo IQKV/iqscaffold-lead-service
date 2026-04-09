@@ -9,7 +9,7 @@ spring:
 
 iqscaffold:
   database:
-    url: ${IQSCAFFOLD_DATABASE_URL:jdbc:postgresql://staging-db:5432/iqscaffold_lead_staging}
+    url: ${IQSCAFFOLD_DATABASE_URL:jdbc:postgresql://uat-db:5432/iqscaffold_lead_uat}
     username: ${IQSCAFFOLD_DATABASE_USERNAME}
     password: ${IQSCAFFOLD_DATABASE_PASSWORD}
   
