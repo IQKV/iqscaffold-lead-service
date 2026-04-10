@@ -196,7 +196,7 @@ Key environment variables for configuration:
 # Database
 IQSCAFFOLD_DATABASE_URL=jdbc:postgresql://localhost:5432/iqscaffold_lead_local
 IQSCAFFOLD_DATABASE_USERNAME=iqscaffold_lead
-IQSCAFFOLD_DATABASE_PASSWORD=iqscaffold_password
+IQSCAFFOLD_DATABASE_PASSWORD=iqkv_password
 
 # Redis
 IQSCAFFOLD_CACHE_REDIS_HOST=localhost

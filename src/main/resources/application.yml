@@ -313,7 +313,7 @@ iqscaffold:
   database:
     url: ${IQSCAFFOLD_DATABASE_URL:jdbc:postgresql://localhost:5432/iqscaffold_lead}
     username: ${IQSCAFFOLD_DATABASE_USERNAME:iqscaffold_lead}
-    password: ${IQSCAFFOLD_DATABASE_PASSWORD:iqscaffold_password}
+    password: ${IQSCAFFOLD_DATABASE_PASSWORD:iqkv_password}
     pool:
       maximum-size: 20
       minimum-idle: 5
@@ -348,7 +348,7 @@ iqscaffold:
       host: ${IQSCAFFOLD_MESSAGING_RABBITMQ_HOST:localhost}
       port: ${IQSCAFFOLD_MESSAGING_RABBITMQ_PORT:5672}
       username: ${IQSCAFFOLD_MESSAGING_RABBITMQ_USERNAME:iqscaffold}
-      password: ${IQSCAFFOLD_MESSAGING_RABBITMQ_PASSWORD:iqscaffold_password}
+      password: ${IQSCAFFOLD_MESSAGING_RABBITMQ_PASSWORD:iqkv_password}
       virtual-host: ${IQSCAFFOLD_MESSAGING_RABBITMQ_VHOST:/}
       connection-timeout: PT30S
       requested-heartbeat: PT60S
