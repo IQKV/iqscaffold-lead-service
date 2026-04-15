@@ -4,7 +4,7 @@
             "name": "iqscaffold",
             "type": "com.iqscaffold.leadservice.config.IqScaffoldProperties",
             "sourceType": "com.iqscaffold.leadservice.config.IqScaffoldProperties",
-            "description": "IQ Scaffold custom configuration properties for the Lead Service."
+            "description": "IQ  Key Value custom configuration properties for the Lead Service."
         },
         {
             "name": "iqscaffold.i18n",

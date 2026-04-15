@@ -15,7 +15,7 @@
             }
         ]
     },
-    "description": "IQ Scaffold Lead Service - Comprehensive Spring Boot monitoring dashboard with JVM, HTTP, Database, Cache, and Business metrics",
+    "description": "IQ  Key Value Lead Service - Comprehensive Spring Boot monitoring dashboard with JVM, HTTP, Database, Cache, and Business metrics",
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 1,
@@ -1735,7 +1735,7 @@
     },
     "timepicker": {},
     "timezone": "",
-    "title": "IQ Scaffold Lead Service - Spring Boot Metrics",
+    "title": "IQ  Key Value Lead Service - Spring Boot Metrics",
     "uid": "iqscaffold-lead-service",
     "version": 1,
     "weekStart": ""

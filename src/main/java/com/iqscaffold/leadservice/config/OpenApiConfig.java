@@ -25,10 +25,10 @@ public class OpenApiConfig {
   public OpenAPI leadServiceOpenAPI() {
     return new OpenAPI()
         .info(new Info()
-            .title("IQ Scaffold Lead Service API")
+            .title("IQ  Key Value Lead Service API")
             .version("1.0.0")
             .description("""
-                CRM lead management and qualification service for IQ Scaffold platform.
+                CRM lead management and qualification service for IQ  Key Value platform.
                 
                 ## Features
                 - Lead CRUD operations with validation
@@ -48,7 +48,7 @@ public class OpenApiConfig {
                 All errors follow RFC 7807 Problem Details format with correlation IDs for tracing.
                 """)
             .contact(new Contact()
-                .name("IQ Scaffold Platform Team")
+                .name("IQ  Key Value Platform Team")
                 .email("api-support@iqscaffold.com")
                 .url("https://docs.iqscaffold.com"))
             .license(new License()

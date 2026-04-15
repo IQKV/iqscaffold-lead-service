@@ -65,7 +65,7 @@ resilience4j:
       contactService:
         timeoutDuration: 10s
 
-# Test-specific IQ Scaffold properties
+# Test-specific IQ  Key Value properties
 iqscaffold:
   tenant-id-header: X-Tenant-ID
   user-service-url: http://iqscaffold-user-service

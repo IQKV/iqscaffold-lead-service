@@ -2,7 +2,7 @@
 
 ### Overview
 
-The IQ Scaffold Lead Service is deployed using Helm charts and automated CI/CD pipelines. The service provides lead management, qualification, scoring, and conversion capabilities with multi-tenancy support.
+The IQ  Key Value Lead Service is deployed using Helm charts and automated CI/CD pipelines. The service provides lead management, qualification, scoring, and conversion capabilities with multi-tenancy support.
 
 ### Prerequisites
 
