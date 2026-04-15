@@ -49,8 +49,8 @@ public class OpenApiConfig {
                 """)
             .contact(new Contact()
                 .name("IQ Key Value Platform Team")
-                .email("api-support@iqscaffold.com")
-                .url("https://docs.iqscaffold.com"))
+                .email("api-support@iqkv.dev")
+                .url("https://docs.iqkv.dev"))
             .license(new License()
                 .name("MIT")
                 .url("https://opensource.org/licenses/MIT")))
@@ -124,7 +124,7 @@ public class OpenApiConfig {
     var errorExample = new io.swagger.v3.oas.models.examples.Example()
         .summary("Error Response")
         .value(java.util.Map.of(
-            "type", "https://api.iqscaffold.com/errors/" + code.toLowerCase().replace(" ", "-"),
+            "type", "https://api.iqkv.dev/errors/" + code.toLowerCase().replace(" ", "-"),
             "title", description,
             "status", Integer.valueOf(code),
             "detail", exampleMessage,
