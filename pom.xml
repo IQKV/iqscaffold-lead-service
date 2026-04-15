@@ -14,7 +14,7 @@
     <artifactId>iqscaffold-lead-service</artifactId>
     <packaging>jar</packaging>
 
-    <name>IQ  Key Value Lead Service</name>
+    <name>IQ Key Value Lead Service</name>
     <description>CRM lead management and qualification service</description>
     <properties>
         <spring-boot.run.jvmArguments>-Duser.timezone=UTC</spring-boot.run.jvmArguments>

@@ -1,4 +1,4 @@
-# 🎯 IQ  Key Value Lead Service
+# 🎯 IQ Key Value Lead Service
 
 > Comprehensive CRM lead management microservice providing multi-tenant lead capture, qualification, scoring, and conversion capabilities with automated workflows and intelligent lead routing.
 
@@ -30,7 +30,7 @@ CRM Lead management service that handles:
 
 ## Overview
 
-This is the lead management hub for the IQ  Key Value CRM platform. It centralizes lead lifecycle management, enabling sales teams to capture, qualify, and convert prospects efficiently while maintaining comprehensive tracking and analytics.
+This is the lead management hub for the IQ Key Value CRM platform. It centralizes lead lifecycle management, enabling sales teams to capture, qualify, and convert prospects efficiently while maintaining comprehensive tracking and analytics.
 
 ## What It Demonstrates
 

@@ -295,7 +295,7 @@ logging:
     net.logstash.logback: INFO
   config: classpath:logback-spring.xml
 
-# IQ  Key Value-specific configuration properties
+# IQ Key Value-specific configuration properties
 iqscaffold:
   # Tenant identification header
   tenant-id-header: X-Tenant-ID
